@@ -8,10 +8,13 @@
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--ink);color:var(--cream);font-family:'DM Mono',monospace;min-height:100vh;overflow-x:hidden;}
   body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4;}
-  header{padding:2rem 3rem 1.5rem;border-bottom:1px solid var(--groove);display:flex;align-items:center;gap:2rem;flex-wrap:wrap;}
-  h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1;color:var(--gold);letter-spacing:-.02em;}
+  header{padding:2.2rem 0 1.2rem;border-bottom:1px solid var(--groove);display:flex;flex-direction:column;gap:.4rem;}
+  .header-inner{max-width:1760px;margin:0 auto;width:100%;padding:0 4.5rem;box-sizing:border-box;display:flex;flex-direction:column;gap:.4rem;}
+  .header-top-row{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;width:100%;}
+  .header-action-row{display:flex;justify-content:flex-end;gap:.5rem;flex-wrap:wrap;width:100%;}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,6.5vw,5.2rem);font-weight:900;line-height:1;color:var(--gold);letter-spacing:-.02em;}
   h1 span{color:var(--amber);font-style:italic;}
-  .tagline{font-size:.65rem;color:var(--smoke);letter-spacing:.2em;text-transform:uppercase;margin-top:.25rem;}
+  .tagline{font-size:.78rem;color:var(--smoke);letter-spacing:.2em;text-transform:uppercase;margin-top:.35rem;}
   .header-actions{margin-left:auto;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;}
   .user-pill{font-size:.65rem;letter-spacing:.1em;color:var(--smoke);background:var(--groove);padding:.3rem .75rem;border-radius:1px;}
   .user-pill strong{color:var(--amber);}
@@ -52,7 +55,8 @@
   #loading p{color:var(--smoke);font-size:.72rem;letter-spacing:.1em;}
 
   /* APP */
-  #app{display:none;padding:1.5rem 3rem 3rem;}
+  #app{display:none;}
+  .app-inner{padding:1.5rem 4.5rem 3rem;max-width:1760px;margin:0 auto;box-sizing:border-box;}
 
   /* Alpha nav */
   .alpha-nav{display:flex;flex-wrap:wrap;gap:.2rem;align-items:center;padding:.7rem 0;border-bottom:1px solid var(--groove);margin-bottom:1.1rem;}
@@ -64,16 +68,21 @@
   .alpha-sep{width:1px;height:12px;background:var(--groove);margin:0 .15rem;flex-shrink:0;}
 
   /* Controls */
-  .controls{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin-bottom:1rem;padding-bottom:1.1rem;border-bottom:1px solid var(--groove);}
-  .controls-left{display:flex;flex-wrap:wrap;gap:.6rem;flex:1;}
+  .controls{display:flex;flex-direction:column;gap:.7rem;margin-bottom:1rem;padding-bottom:1.1rem;border-bottom:1px solid var(--groove);}
+  .controls-left{display:flex;flex-wrap:wrap;gap:.6rem;width:100%;}
   select{background:var(--wax);border:1px solid var(--groove);color:var(--cream);font-family:'DM Mono',monospace;font-size:.68rem;padding:.5rem .9rem;border-radius:1px;cursor:pointer;outline:none;min-width:128px;letter-spacing:.04em;transition:border-color .2s;}
   select:focus,select:hover{border-color:var(--amber);}
   .search-wrap input{width:210px;background:var(--wax);border:1px solid var(--groove);color:var(--cream);font-family:'DM Mono',monospace;font-size:.68rem;padding:.5rem .9rem;border-radius:1px;outline:none;transition:border-color .2s;}
   .search-wrap input:focus{border-color:var(--amber);}
   .search-wrap input::placeholder{color:var(--smoke);}
   .sort-btns{display:flex;gap:.3rem;align-items:center;}
+  .value-summary-sep{color:var(--groove);margin:0 .2rem;}
+  .value-summary{font-size:.62rem;color:var(--smoke);letter-spacing:.03em;white-space:nowrap;}
+  .value-summary strong{color:var(--amber);font-weight:500;}
   .sort-btns span{font-size:.58rem;color:var(--smoke);letter-spacing:.1em;text-transform:uppercase;}
   .btn-sort{padding:.38rem .62rem;background:transparent;border:1px solid var(--groove);color:var(--light-smoke);font-family:'DM Mono',monospace;font-size:.6rem;cursor:pointer;border-radius:1px;transition:all .2s;letter-spacing:.05em;}
+  .btn-sort-dir{padding:.38rem .55rem;background:transparent;border:1px solid var(--groove);color:var(--amber);font-family:'DM Mono',monospace;font-size:.7rem;cursor:pointer;border-radius:1px;transition:all .2s;line-height:1;}
+  .btn-sort-dir:hover{border-color:var(--gold);color:var(--gold);}
   .btn-sort:hover{border-color:var(--amber);color:var(--amber);}
   .btn-sort.active{border-color:var(--amber);color:var(--amber);background:rgba(200,114,42,.1);}
   .app-btns{display:flex;gap:.45rem;flex-wrap:wrap;}
@@ -97,6 +106,7 @@
   .record-title{font-family:'Playfair Display',serif;font-size:.86rem;color:var(--cream);line-height:1.3;margin-bottom:.3rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .record-meta{font-size:.56rem;color:var(--smoke);display:flex;flex-wrap:wrap;gap:.3rem;}
   .record-meta span{background:var(--groove);padding:.1rem .32rem;border-radius:1px;}
+  .record-meta span.record-price{color:var(--amber);font-weight:500;}
   .empty-state{text-align:center;padding:4rem;color:var(--smoke);grid-column:1/-1;}
   .empty-state h3{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:.4rem;color:var(--light-smoke);}
   .empty-state p{font-size:.7rem;}
@@ -154,6 +164,51 @@
   .modal-header h2{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--gold);}
   .modal-header-actions{display:flex;gap:.6rem;align-items:center;}
   .modal-body{flex:1;overflow-y:auto;padding:.9rem 1.4rem;}
+
+  /* DETAIL SIDE PANEL */
+  #detail-backdrop{display:none;position:fixed;inset:0;background:rgba(8,5,2,.7);z-index:1100;}
+  #detail-backdrop.open{display:block;}
+  #detail-panel{position:fixed;top:0;right:-420px;width:420px;max-width:92vw;height:100%;background:var(--wax);border-left:1px solid var(--groove);z-index:1101;transition:right .28s cubic-bezier(.25,.46,.45,.94);display:flex;flex-direction:column;box-shadow:-12px 0 32px rgba(0,0,0,.5);}
+  #detail-panel.open{right:0;}
+  .dp-header{position:relative;padding:1.4rem 1.4rem 1rem;border-bottom:1px solid var(--groove);display:flex;gap:1rem;align-items:flex-start;}
+  .dp-close{position:absolute;top:.8rem;right:.9rem;background:transparent;border:none;color:var(--smoke);font-size:1.2rem;cursor:pointer;line-height:1;padding:.2rem .4rem;transition:color .2s;}
+  .dp-close:hover{color:var(--cream);}
+  .dp-thumb{width:88px;height:88px;object-fit:cover;border:1px solid var(--groove);flex-shrink:0;background:var(--groove);}
+  .dp-thumb-placeholder{width:88px;height:88px;display:flex;align-items:center;justify-content:center;font-size:2rem;background:var(--groove);border:1px solid var(--groove);flex-shrink:0;}
+  .dp-titles{padding-right:1.6rem;min-width:0;}
+  .dp-title{font-family:'Playfair Display',serif;font-weight:900;font-size:1.15rem;color:var(--gold);line-height:1.2;margin-bottom:.3rem;word-wrap:break-word;}
+  .dp-artist{color:var(--amber);font-size:.85rem;margin-bottom:.35rem;word-wrap:break-word;}
+  .dp-meta-row{display:flex;flex-wrap:wrap;gap:.4rem;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--smoke);}
+  .dp-meta-row span{background:var(--groove);padding:.2rem .5rem;border-radius:1px;}
+  .dp-body{flex:1;overflow-y:auto;padding:1.1rem 1.4rem;}
+  .dp-section-label{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--smoke);margin-bottom:.6rem;margin-top:1.2rem;}
+  .dp-section-label:first-child{margin-top:0;}
+  .dp-tracklist{display:flex;flex-direction:column;}
+  .dp-track{display:flex;gap:.7rem;padding:.5rem 0;border-bottom:1px solid var(--groove);font-size:.78rem;}
+  .dp-track:last-child{border-bottom:none;}
+  .dp-track-pos{color:var(--amber);font-family:'DM Mono',monospace;min-width:2.2rem;flex-shrink:0;}
+  .dp-track-title{flex:1;color:var(--cream);}
+  .dp-track-dur{color:var(--smoke);flex-shrink:0;font-size:.72rem;}
+  .dp-notes{font-size:.75rem;line-height:1.65;color:var(--light-smoke);white-space:pre-wrap;}
+  .dp-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:3rem 1rem;color:var(--smoke);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;}
+  .dp-loading .vinyl-spinner{width:48px;height:48px;}
+  .dp-error{font-size:.78rem;color:var(--smoke);line-height:1.6;padding:1rem 0;}
+  .dp-footer{padding:1rem 1.4rem;border-top:1px solid var(--groove);}
+  .dp-discogs-link{display:block;text-align:center;background:var(--groove);color:var(--amber);text-decoration:none;padding:.6rem 1rem;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;transition:background .2s;}
+  .dp-discogs-link:hover{background:#4d3720;}
+
+  /* GENRE PRICE GUIDE */
+  .price-token-row{display:flex;gap:.5rem;align-items:center;margin-bottom:.9rem;flex-wrap:wrap;}
+  .price-token-row input{flex:1;min-width:180px;background:var(--groove);border:1px solid #5d4530;color:var(--cream);font-family:'DM Mono',monospace;font-size:.72rem;padding:.5rem .6rem;border-radius:1px;}
+  .price-sync-status{font-size:.65rem;color:var(--smoke);margin-bottom:.9rem;letter-spacing:.03em;}
+  .price-progress-track{height:4px;background:var(--groove);border-radius:2px;overflow:hidden;margin-bottom:1rem;}
+  .price-progress-bar{height:100%;background:var(--amber);width:0%;transition:width .3s;}
+  .price-genre-table{width:100%;border-collapse:collapse;font-size:.72rem;}
+  .price-genre-table th{text-align:left;color:var(--smoke);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;padding:.4rem .5rem;border-bottom:1px solid var(--groove);}
+  .price-genre-table td{padding:.45rem .5rem;border-bottom:1px solid var(--groove);}
+  .price-genre-table tr:last-child td{border-bottom:none;}
+  .price-genre-table .pg-median{color:var(--amber);font-family:'DM Mono',monospace;text-align:right;}
+  .price-genre-table .pg-count{color:var(--smoke);text-align:right;font-size:.65rem;}
   .modal-body::-webkit-scrollbar{width:3px;}.modal-body::-webkit-scrollbar-track{background:var(--groove);}.modal-body::-webkit-scrollbar-thumb{background:var(--amber);}
   .btn-icon-close{background:transparent;border:none;color:var(--smoke);font-size:1.1rem;cursor:pointer;transition:color .2s;line-height:1;padding:.2rem;}
   .btn-icon-close:hover{color:var(--cream);}
@@ -191,7 +246,9 @@
   .gh-url{display:block;margin-top:.3rem;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--smoke);word-break:break-all;background:var(--groove);padding:.35rem .6rem;border-radius:1px;}
 
   @media(max-width:640px){
-    header,#app{padding:1.5rem;}
+    header{padding:1.5rem 0;}
+    .header-inner{padding:0 1.25rem;}
+    .app-inner{padding:1.5rem 1.25rem;}
     #collection-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
     .search-wrap input{width:100%;}
     .wheel-layout{padding:1.5rem 1rem;}
@@ -202,19 +259,28 @@
 <body>
 
 <header>
-  <div>
-    <h1>Vinyl <span>Vault</span></h1>
-    <div class="tagline" id="tagline">764 records</div>
+<div class="header-inner">
+  <div class="header-top-row">
+    <div>
+      <h1>Vinyl <span>Vault</span></h1>
+      <div class="tagline" id="tagline">Discogs Collection Manager</div>
+    </div>
+    <div class="header-actions" id="header-actions" style="display: none;">
+      <div class="user-pill">Logged in as <strong id="username-display">.VinylSam</strong></div>
+      <button class="btn-text highlight" id="app-share-btn" onclick="openExportModal()">⇱ Share &amp; Export</button>
+      <button class="btn-text" id="btn-logout" onclick="logout()">↩ Logout</button>
+    </div>
   </div>
-  <div class="header-actions" id="header-actions" style="display: flex;">
-    <div class="user-pill">Logged in as <strong id="username-display">.VinylSam</strong></div>
-    <button class="btn-text highlight" id="btn-share-header" onclick="openExportModal()">⇱ Share &amp; Export</button>
-    <button class="btn-text" id="btn-logout" onclick="logout()">↩ Logout</button>
+  <div class="header-action-row" id="header-action-row" style="display: none;">
+    <button class="btn-action amber" onclick="openWheelModal()">💿 Pick Next Spin</button>
+    <button class="btn-action muted" onclick="openHistoryModal()">📋 History <span id="hist-badge"></span></button>
+    <button class="btn-action muted" onclick="openPriceModal()">💰 Price Guide</button>
   </div>
+</div>
 </header>
 
 <!-- SETUP -->
-<div id="setup-panel" style="display: none;">
+<div id="setup-panel" style="display: block;">
   <div class="setup-tabs">
     <button class="tab-btn active" onclick="switchTab('token')">🔑 API Token</button>
     <button class="tab-btn" onclick="switchTab('import')">📦 Import JSON</button>
@@ -231,7 +297,7 @@
       <label>Personal Access Token</label>
       <input type="password" id="input-token" placeholder="your_token_here">
     </div>
-    <button class="btn-primary" id="btn-load" onclick="loadCollection()" disabled="">Load My Collection</button>
+    <button class="btn-primary" id="btn-load" onclick="loadCollection()">Load My Collection</button>
   </div>
   <div id="tab-import" class="tab-pane">
     <h2>Import from File</h2>
@@ -259,7 +325,8 @@
 </div>
 
 <!-- APP -->
-<div id="app" style="display: block;">
+<div id="app" style="display: none;">
+<div class="app-inner">
   <div class="controls">
     <div class="controls-left">
       <select id="filter-genre" onchange="applyFilters()"><option value="">All Genres</option><option value="Blues">Blues</option><option value="Children's">Children's</option><option value="Classical">Classical</option><option value="Electronic">Electronic</option><option value="Folk, World, &amp; Country">Folk, World, &amp; Country</option><option value="Funk / Soul">Funk / Soul</option><option value="Hip Hop">Hip Hop</option><option value="Jazz">Jazz</option><option value="Latin">Latin</option><option value="Non-Music">Non-Music</option><option value="Pop">Pop</option><option value="Rock">Rock</option><option value="Stage &amp; Screen">Stage &amp; Screen</option></select>
@@ -276,11 +343,10 @@
       <button class="btn-sort" data-sort="title" onclick="setSort('title')">Title</button>
       <button class="btn-sort" data-sort="year" onclick="setSort('year')">Year</button>
       <button class="btn-sort" data-sort="added" onclick="setSort('added')">Added</button>
-    </div>
-    <div class="app-btns">
-      <button class="btn-action amber" onclick="openWheelModal()">🎲 Pick Next Spin</button>
-      <button class="btn-action muted" onclick="openHistoryModal()">📋 History <span id="hist-badge"></span></button>
-      <button class="btn-action share" id="app-share-btn" onclick="openExportModal()">⇱ Share</button>
+      <button class="btn-sort" data-sort="value" onclick="setSort('value')">Value</button>
+      <button class="btn-sort-dir" id="btn-sort-dir" onclick="toggleSortDir()" title="Toggle ascending/descending">↓</button>
+      <span class="value-summary-sep">|</span>
+      <span class="value-summary" id="value-summary">Estimated Collection Value: —</span>
     </div>
   </div>
 
@@ -9456,6 +9522,7 @@
       </div>
     </div></div>
 </div>
+</div>
 
 <!-- WHEEL MODAL -->
 <div id="wheel-modal">
@@ -9560,10 +9627,59 @@
   </div>
 </div>
 
+<div id="price-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 style="font-family:'Playfair Display',serif;color:var(--gold);font-size:1.1rem">💰 Genre Price Guide</h2>
+      <div class="modal-header-actions">
+        <button class="btn-icon-close" onclick="closePriceModal()">✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.7rem;color:var(--smoke);line-height:1.6;margin-bottom:.8rem">
+        Median resale value per genre, estimated live from Discogs Marketplace price suggestions for each record in your collection. Requires a Discogs personal access token (same kind used to load your collection) — generate one at
+        <a href="https://www.discogs.com/settings/developers" target="_blank" style="color:var(--amber)">discogs.com/settings/developers</a>.
+        Your token is stored only in this browser.
+      </p>
+      <div class="price-token-row">
+        <input type="password" id="price-token-input" placeholder="Discogs personal access token">
+        <button class="btn-action amber" id="price-sync-btn" onclick="startPriceSync()">Sync Prices</button>
+      </div>
+      <div class="price-sync-status" id="price-sync-status"></div>
+      <div class="price-progress-track"><div class="price-progress-bar" id="price-progress-bar"></div></div>
+      <table class="price-genre-table">
+        <thead><tr><th>Genre</th><th style="text-align:right">Median</th><th style="text-align:right">Priced</th></tr></thead>
+        <tbody id="price-genre-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ALBUM DETAIL SIDE PANEL -->
+<div id="detail-backdrop" onclick="closeDetailPanel()"></div>
+<div id="detail-panel">
+  <div class="dp-header" id="dp-header">
+    <button class="dp-close" onclick="closeDetailPanel()">✕</button>
+  </div>
+  <div class="dp-body" id="dp-body"></div>
+  <div class="dp-footer" id="dp-footer" style="display:none">
+    <a class="dp-discogs-link" id="dp-discogs-link" href="#" target="_blank" rel="noopener">View full listing on Discogs ↗</a>
+  </div>
+</div>
+
 <script>
+// ── FORCE LOGGED-OUT INITIAL STATE ──────────────────────────────────────────
+// Belt-and-suspenders: guarantee only the login screen is visible on load,
+// no matter what state the raw HTML/inline styles happen to be in.
+document.getElementById('app').style.display='none';
+document.getElementById('loading').style.display='none';
+document.getElementById('setup-panel').style.display='block';
+document.getElementById('header-actions').style.display='none';
+document.getElementById('header-action-row').style.display='none';
+
 // ── STATE ────────────────────────────────────────────────────────────────────
 let allRecords=[], filteredRecords=[], wheelRecords=[], spinHistory=[];
-let currentSort='artist', currentAlpha='ALL';
+let currentSort='artist', currentAlpha='ALL', sortDir=1;
 let isSpinning=false, spinAnim=null, vinylAngle=0, idleAnimId=null;
 
 try{ spinHistory=JSON.parse(sessionStorage.getItem('vv_history')||'[]'); }catch(e){}
@@ -9576,12 +9692,11 @@ var __SNAPSHOT_DATA__ = {"username":".VinylSam","exportedAt":"2026-06-30T19:06:5
 /* __VINYL_VAULT_SNAPSHOT_END__ */
 
 (function(){
-  if(__SNAPSHOT_DATA__ && __SNAPSHOT_DATA__.records){
+  if(false && __SNAPSHOT_DATA__ && __SNAPSHOT_DATA__.records){
     document.addEventListener('DOMContentLoaded',function(){
       allRecords = __SNAPSHOT_DATA__.records;
       initApp(__SNAPSHOT_DATA__.username||'Shared Collection', __SNAPSHOT_DATA__.exportedAt||'');
       // In snapshot mode: hide share/logout buttons (they still have the app otherwise fully functional)
-      document.getElementById('btn-share-header').style.display='none';
       document.getElementById('btn-logout').style.display='none';
       document.getElementById('app-share-btn').style.display='none';
     });
@@ -9626,6 +9741,7 @@ async function loadCollection(){
   document.getElementById('loading').style.display='block';
   try{
     allRecords=await fetchAll(username,token);
+    try{ localStorage.setItem(PRICE_TOKEN_KEY, token); }catch(e){}
     initApp(username,'');
   }catch(err){
     document.getElementById('loading').style.display='none';
@@ -9678,6 +9794,7 @@ function initApp(username, exportedAt){
   document.getElementById('setup-panel').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('header-actions').style.display='flex';
+  document.getElementById('header-action-row').style.display='flex';
   document.getElementById('username-display').textContent=username;
   const tagline=document.getElementById('tagline');
   if(exportedAt){
@@ -9691,12 +9808,16 @@ function initApp(username, exportedAt){
   buildAlphaNav();
   applyFilters();
   updateHistBadge();
+  renderPriceTable();
+  updateValueSummary();
+  autoResumePriceSync();
 }
 
 function logout(){
   allRecords=[];filteredRecords=[];
   document.getElementById('app').style.display='none';
   document.getElementById('header-actions').style.display='none';
+  document.getElementById('header-action-row').style.display='none';
   document.getElementById('setup-panel').style.display='block';
   document.getElementById('input-token').value='';
   document.getElementById('btn-load').disabled=false;
@@ -9809,21 +9930,35 @@ function setSort(key){
   // Alpha nav changes meaning when sort changes (artist vs title key)
   buildAlphaNav();
   // If alphabetical sort, alpha nav makes sense; otherwise reset to ALL
-  if(key==='year'||key==='added') currentAlpha='ALL';
+  if(key==='year'||key==='added'||key==='value') currentAlpha='ALL';
+  applyFilters();
+}
+
+function toggleSortDir(){
+  sortDir*=-1;
+  document.getElementById('btn-sort-dir').textContent = sortDir===1 ? '↓' : '↑';
   applyFilters();
 }
 
 function sortRecords(){
   filteredRecords.sort((a,b)=>{
-    if(currentSort==='artist') return getSortKey(a).localeCompare(getSortKey(b));
+    let result=0;
+    if(currentSort==='artist') result=getSortKey(a).localeCompare(getSortKey(b));
     if(currentSort==='title'){
       const ta=a.title.replace(/^(the|a|an)\s+/i,'');
       const tb=b.title.replace(/^(the|a|an)\s+/i,'');
-      return ta.localeCompare(tb);
+      result=ta.localeCompare(tb);
     }
-    if(currentSort==='year') return(b.year||0)-(a.year||0);
-    if(currentSort==='added') return new Date(b.date_added)-new Date(a.date_added);
-    return 0;
+    if(currentSort==='year') result=(b.year||0)-(a.year||0);
+    if(currentSort==='added') result=new Date(b.date_added)-new Date(a.date_added);
+    if(currentSort==='value'){
+      const va=getRecMedian(a), vb=getRecMedian(b);
+      if(va==null&&vb==null) result=0;
+      else if(va==null) result=1;
+      else if(vb==null) result=-1;
+      else result=vb-va;
+    }
+    return result*sortDir;
   });
 }
 
@@ -9841,7 +9976,7 @@ function renderGrid(){
   let html='';
 
   filteredRecords.forEach(r=>{
-    html+=`<div class="record-card" data-url="https://www.discogs.com/release/${r.release_id}">
+    html+=`<div class="record-card" data-url="https://www.discogs.com/release/${r.release_id}" data-release-id="${r.release_id}">
       ${r.thumb?`<img class="record-thumb" src="${escHtml(r.thumb)}" alt="${escHtml(r.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`:``}
       <div class="record-thumb-placeholder" style="display:${r.thumb?'none':'flex'}">🎵</div>
       <div class="record-info">
@@ -9851,6 +9986,7 @@ function renderGrid(){
           ${r.year?`<span>${r.year}</span>`:''}
           ${r.formats[0]?`<span>${escHtml(r.formats[0])}</span>`:''}
           ${r.genres[0]?`<span>${escHtml(r.genres[0])}</span>`:''}
+          ${(()=>{ const p=priceCache[String(r.release_id)]; const med=getRecMedian(r); return (p&&med!=null) ? `<span class="record-price">${p.currency==='USD'?'$':p.currency+' '}${med.toFixed(2)}</span>` : ''; })()}
         </div>
       </div>
     </div>`;
@@ -9859,16 +9995,123 @@ function renderGrid(){
   grid.innerHTML=html;
 }
 
-// Event delegation for record cards (mobile-safe — avoids window.open on div onclick)
+// Event delegation for record cards — opens the side detail panel
 document.getElementById('collection-grid').addEventListener('click', function(e){
   const card = e.target.closest('.record-card');
-  if(card && card.dataset.url) window.open(card.dataset.url, '_blank');
+  if(card && card.dataset.releaseId) openDetailPanel(card.dataset.releaseId, card.dataset.url);
 });
-// Event delegation for history lists
+// Event delegation for history lists — also opens the side detail panel
 document.addEventListener('click', function(e){
   const item = e.target.closest('.history-item, .hm-item');
-  if(item && item.dataset.url) window.open(item.dataset.url, '_blank');
+  if(item && item.dataset.releaseId) openDetailPanel(item.dataset.releaseId, item.dataset.url);
 });
+
+// ── ALBUM DETAIL SIDE PANEL ─────────────────────────────────────────────────
+let dpCurrentRequest = 0;
+
+function openDetailPanel(releaseId, discogsUrl){
+  document.getElementById('detail-backdrop').classList.add('open');
+  document.getElementById('detail-panel').classList.add('open');
+  document.getElementById('dp-discogs-link').href = discogsUrl || `https://www.discogs.com/release/${releaseId}`;
+  document.getElementById('dp-footer').style.display = 'block';
+  renderDetailLoading();
+
+  const requestId = ++dpCurrentRequest;
+  fetch(`https://api.discogs.com/releases/${releaseId}`)
+    .then(r => { if(!r.ok) throw new Error('not found'); return r.json(); })
+    .then(data => { if(requestId === dpCurrentRequest) renderDetailData(data, discogsUrl); })
+    .catch(() => { if(requestId === dpCurrentRequest) renderDetailError(discogsUrl); });
+}
+
+function closeDetailPanel(){
+  document.getElementById('detail-backdrop').classList.remove('open');
+  document.getElementById('detail-panel').classList.remove('open');
+  dpCurrentRequest++; // invalidate any in-flight fetch
+}
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && document.getElementById('detail-panel').classList.contains('open')) closeDetailPanel();
+});
+
+function renderDetailLoading(){
+  document.getElementById('dp-header').innerHTML = `<button class="dp-close" onclick="closeDetailPanel()">✕</button>`;
+  document.getElementById('dp-body').innerHTML = `
+    <div class="dp-loading">
+      <svg class="vinyl-spinner" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d1f0e" stroke="#3d2b18" stroke-width="1"></circle>
+        <circle cx="40" cy="40" r="30" fill="none" stroke="#4d3720" stroke-width="0.5"></circle>
+        <circle cx="40" cy="40" r="22" fill="none" stroke="#4d3720" stroke-width="0.5"></circle>
+        <circle cx="40" cy="40" r="14" fill="none" stroke="#4d3720" stroke-width="0.5"></circle>
+        <circle cx="40" cy="40" r="6" fill="#1a1008"></circle><circle cx="40" cy="40" r="3" fill="#c8722a"></circle>
+      </svg>
+      <p>Loading album details…</p>
+    </div>`;
+}
+
+function renderDetailError(discogsUrl){
+  document.getElementById('dp-body').innerHTML = `
+    <div class="dp-error">
+      Couldn't load details for this release right now (Discogs may be rate-limiting or the release may be unavailable).
+      Use the link below to view it directly on Discogs.
+    </div>`;
+}
+
+function renderDetailData(data, discogsUrl){
+  const thumb = data.thumb || (data.images && data.images[0] && data.images[0].uri) || '';
+  const artists = (data.artists_sort || (data.artists||[]).map(a=>a.name).join(', ') || 'Unknown Artist');
+  const genresStyles = [...(data.genres||[]), ...(data.styles||[])];
+
+  document.getElementById('dp-header').innerHTML = `
+    <button class="dp-close" onclick="closeDetailPanel()">✕</button>
+    ${thumb ? `<img class="dp-thumb" src="${escHtml(thumb)}" alt="${escHtml(data.title||'')}" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
+    <div class="dp-thumb-placeholder" style="display:${thumb?'none':'flex'}">🎵</div>
+    <div class="dp-titles">
+      <div class="dp-title">${escHtml(data.title||'Untitled')}</div>
+      <div class="dp-artist">${escHtml(artists)}</div>
+      <div class="dp-meta-row">
+        ${data.year?`<span>${data.year}</span>`:''}
+        ${data.country?`<span>${escHtml(data.country)}</span>`:''}
+        ${(data.formats&&data.formats[0])?`<span>${escHtml(data.formats[0].name)}</span>`:''}
+      </div>
+    </div>`;
+
+  let html = '';
+
+  if(genresStyles.length){
+    html += `<div class="dp-section-label">Genre / Style</div>
+      <div class="dp-meta-row" style="margin-bottom:.5rem">${genresStyles.map(g=>`<span>${escHtml(g)}</span>`).join('')}</div>`;
+  }
+
+  if(data.tracklist && data.tracklist.length){
+    html += `<div class="dp-section-label">Tracklist</div><div class="dp-tracklist">`;
+    data.tracklist.forEach(t => {
+      if(t.type_ && t.type_ !== 'track'){
+        html += `<div class="dp-track"><div class="dp-track-title" style="color:var(--smoke);text-transform:uppercase;font-size:.65rem;letter-spacing:.08em">${escHtml(t.title||'')}</div></div>`;
+      } else {
+        html += `<div class="dp-track">
+          <div class="dp-track-pos">${escHtml(t.position||'')}</div>
+          <div class="dp-track-title">${escHtml(t.title||'')}</div>
+          <div class="dp-track-dur">${escHtml(t.duration||'')}</div>
+        </div>`;
+      }
+    });
+    html += `</div>`;
+  }
+
+  if(data.notes){
+    html += `<div class="dp-section-label">Notes</div><div class="dp-notes">${escHtml(data.notes)}</div>`;
+  }
+
+  if(data.labels && data.labels.length){
+    html += `<div class="dp-section-label">Label</div><div class="dp-notes">${escHtml(data.labels.map(l=>l.name + (l.catno?` (${l.catno})`:'')).join(', '))}</div>`;
+  }
+
+  if(!html){
+    html = `<div class="dp-error">No additional details were returned for this release.</div>`;
+  }
+
+  document.getElementById('dp-body').innerHTML = html;
+}
 
 // ── VINYL WHEEL ───────────────────────────────────────────────────────────────
 function openWheelModal(){
@@ -10036,7 +10279,7 @@ function renderWheelHist(){
     const rec=h.record;
     const d=new Date(h.spunAt);
     const ds=d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-    return`<div class="history-item" data-url="https://www.discogs.com/release/${rec.release_id}">
+    return`<div class="history-item" data-url="https://www.discogs.com/release/${rec.release_id}" data-release-id="${rec.release_id}">
       <span class="hist-num">${i+1}</span>
       ${rec.thumb?`<img class="hist-thumb" src="${rec.thumb}" alt="" referrerpolicy="no-referrer">`:` <div class="hist-thumb-ph">🎵</div>`}
       <div class="hist-info"><div class="hist-artist">${escHtml(rec.artist)}</div><div class="hist-title">${escHtml(rec.title)}</div><div class="hist-date">${ds}</div></div>
@@ -10053,7 +10296,7 @@ function renderHistoryModal(){
     const rec=h.record;
     const d=new Date(h.spunAt);
     const ds=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'})+', '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-    return`<div class="hm-item" data-url="https://www.discogs.com/release/${rec.release_id}">
+    return`<div class="hm-item" data-url="https://www.discogs.com/release/${rec.release_id}" data-release-id="${rec.release_id}">
       <span class="hm-num">${i+1}</span>
       ${rec.thumb?`<img class="hm-thumb" src="${rec.thumb}" alt="" referrerpolicy="no-referrer">`:` <div class="hm-thumb-ph">🎵</div>`}
       <div class="hm-info"><div class="hm-artist">${escHtml(rec.artist)}</div><div class="hm-title">${escHtml(rec.title)}</div>
@@ -10161,7 +10404,185 @@ function doExport(){
   closeExportModal();
 }
 
-// ── UTILS ──────────────────────────────────────────────────────────────────────
+// ── GENRE PRICE GUIDE ────────────────────────────────────────────────────────
+const PRICE_CACHE_KEY='vv_price_cache';
+const PRICE_TOKEN_KEY='vv_discogs_price_token';
+let priceCache={};
+try{ priceCache=JSON.parse(localStorage.getItem(PRICE_CACHE_KEY)||'{}'); }catch(e){ priceCache={}; }
+let priceSyncRunning=false;
+let priceSyncAbort=false;
+
+function median(nums){
+  if(!nums.length)return null;
+  const a=[...nums].sort((x,y)=>x-y);
+  const mid=Math.floor(a.length/2);
+  return a.length%2 ? a[mid] : (a[mid-1]+a[mid])/2;
+}
+
+// Returns a record's cached median price (handles both current {med} and legacy {value} cache entries)
+function getRecMedian(r){
+  const p=priceCache[String(r.release_id)];
+  if(!p)return null;
+  return typeof p.med==='number' ? p.med : (typeof p.value==='number' ? p.value : null);
+}
+
+function openPriceModal(){
+  document.getElementById('price-modal').classList.add('open');
+  const savedToken=localStorage.getItem(PRICE_TOKEN_KEY)||'';
+  document.getElementById('price-token-input').value=savedToken;
+  renderPriceTable();
+}
+function closePriceModal(){
+  document.getElementById('price-modal').classList.remove('open');
+  priceSyncAbort=true;
+}
+
+function getUniqueReleaseIds(){
+  const seen=new Set();
+  allRecords.forEach(r=>seen.add(String(r.release_id)));
+  return [...seen];
+}
+
+// Auto-resume syncing with a previously saved token, without requiring the modal to be opened
+function autoResumePriceSync(){
+  const savedToken=localStorage.getItem(PRICE_TOKEN_KEY);
+  if(!savedToken)return;
+  const remaining=getUniqueReleaseIds().filter(id=>!priceCache[id]);
+  if(!remaining.length)return;
+  document.getElementById('price-token-input').value=savedToken;
+  startPriceSync();
+}
+
+async function startPriceSync(){
+  if(priceSyncRunning){ priceSyncAbort=true; return; }
+  const token=document.getElementById('price-token-input').value.trim();
+  if(!token){ document.getElementById('price-sync-status').textContent='Enter a Discogs token first.'; return; }
+  localStorage.setItem(PRICE_TOKEN_KEY, token);
+
+  const ids=getUniqueReleaseIds().filter(id=>!priceCache[id]);
+  if(!ids.length){
+    document.getElementById('price-sync-status').textContent='All records already priced. Delete cache below to re-sync.';
+    return;
+  }
+
+  priceSyncRunning=true; priceSyncAbort=false;
+  const btn=document.getElementById('price-sync-btn');
+  if(btn)btn.textContent='Stop Sync';
+  const statusEl=document.getElementById('price-sync-status');
+  const barEl=document.getElementById('price-progress-bar');
+  const total=ids.length;
+  let attempted=0, priced=0, consecutiveNetworkErrors=0;
+  let stoppedByError=false;
+
+  for(const id of ids){
+    if(priceSyncAbort)break;
+    try{
+      const res=await fetch(`https://api.discogs.com/marketplace/price_suggestions/${id}?token=${encodeURIComponent(token)}`);
+      if(res.ok){
+        consecutiveNetworkErrors=0;
+        const data=await res.json();
+        const vals=Object.values(data).map(v=>v.value).filter(v=>typeof v==='number');
+        if(vals.length){
+          priceCache[id]={
+            low:Math.min(...vals),
+            med:median(vals),
+            high:Math.max(...vals),
+            currency:Object.values(data)[0].currency,
+            ts:Date.now()
+          };
+          priced++;
+        }
+      } else {
+        consecutiveNetworkErrors=0;
+        let apiMsg='';
+        try{ apiMsg=(await res.json()).message||''; }catch(e){}
+        if(res.status===401){
+          if(statusEl)statusEl.textContent='Token rejected by Discogs. Check it and try again.';
+        } else if(res.status===400 && /seller/i.test(apiMsg)){
+          if(statusEl)statusEl.textContent=`Discogs blocked this: "${apiMsg}". Price suggestions require a seller profile — set one up at discogs.com/settings/seller, then re-sync.`;
+        } else if(res.status===429){
+          if(statusEl)statusEl.textContent='Discogs rate limit hit. Stopped early — try again in a minute.';
+        } else {
+          if(statusEl)statusEl.textContent=`Discogs error ${res.status}${apiMsg?': '+apiMsg:''}. Stopped syncing.`;
+        }
+        stoppedByError=true;
+        break; // this kind of failure will repeat for every record, so stop rather than burn through the rate limit
+      }
+    }catch(e){
+      // Likely a network or CORS problem — count it, and stop rather than silently "finishing" without pricing anything
+      consecutiveNetworkErrors++;
+      if(consecutiveNetworkErrors>=5){
+        if(statusEl)statusEl.textContent='Repeated network errors reaching Discogs (possibly a CORS or connectivity issue). Stopped syncing.';
+        stoppedByError=true;
+        break;
+      }
+    }
+    attempted++;
+    if(statusEl)statusEl.textContent=`Syncing… ${attempted}/${total} checked, ${priced} priced this session`;
+    if(barEl)barEl.style.width=`${Math.round(attempted/total*100)}%`;
+    if(attempted%15===0){
+      try{ localStorage.setItem(PRICE_CACHE_KEY, JSON.stringify(priceCache)); }catch(e){}
+      renderPriceTable();
+      renderGrid();
+      updateValueSummary();
+    }
+    await new Promise(r=>setTimeout(r,1100)); // stay under Discogs' authenticated rate limit
+  }
+
+  try{ localStorage.setItem(PRICE_CACHE_KEY, JSON.stringify(priceCache)); }catch(e){}
+  priceSyncRunning=false;
+  if(btn)btn.textContent='Sync Prices';
+  if(statusEl && !stoppedByError)statusEl.textContent = priceSyncAbort ? `Stopped. ${priced} priced (${attempted}/${total} checked).` : `Done. ${priced} priced (${attempted}/${total} checked).`;
+  renderPriceTable();
+  renderGrid();
+  updateValueSummary();
+}
+
+function renderPriceTable(){
+  const genreMap={}; // genre -> [release_id...]
+  const seenPerGenre={}; // genre -> Set of release_ids already counted
+  allRecords.forEach(r=>{
+    (r.genres||[]).forEach(g=>{
+      genreMap[g]=genreMap[g]||[];
+      seenPerGenre[g]=seenPerGenre[g]||new Set();
+      const rid=String(r.release_id);
+      if(seenPerGenre[g].has(rid))return;
+      seenPerGenre[g].add(rid);
+      genreMap[g].push(rid);
+    });
+  });
+
+  const rows=Object.keys(genreMap).sort().map(genre=>{
+    const ids=genreMap[genre];
+    const priced=ids.map(id=>priceCache[id]).filter(Boolean);
+    const values=priced.map(p=>typeof p.med==='number'?p.med:p.value).filter(v=>typeof v==='number');
+    const med=median(values);
+    const currency=priced[0]?priced[0].currency:'USD';
+    const medStr=med!=null ? `${currency==='USD'?'$':currency+' '}${med.toFixed(2)}` : '—';
+    return `<tr><td>${escHtml(genre)}</td><td class="pg-median">${medStr}</td><td class="pg-count">${priced.length}/${ids.length}</td></tr>`;
+  }).join('');
+
+  document.getElementById('price-genre-tbody').innerHTML = rows || '<tr><td colspan="3" style="color:var(--smoke)">No genres found.</td></tr>';
+}
+
+// Estimated Collection Value: sums each priced record's low/median/high suggestion across the whole collection
+function updateValueSummary(){
+  const el=document.getElementById('value-summary');
+  if(!el)return;
+  const ids=getUniqueReleaseIds();
+  const priced=ids.map(id=>priceCache[id]).filter(p=>p && typeof p.low==='number' && typeof p.high==='number');
+  if(!priced.length){
+    el.textContent='Estimated Collection Value: —';
+    return;
+  }
+  const currency=priced[0].currency==='USD' ? '$' : priced[0].currency+' ';
+  const sum=key=>priced.reduce((t,p)=>t+p[key],0);
+  const fmt=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const coverage = priced.length < ids.length ? ` (${priced.length}/${ids.length} priced)` : '';
+  el.innerHTML = `Estimated Collection Value: Low <strong>${currency}${fmt(sum('low'))}</strong> Med <strong>${currency}${fmt(sum('med'))}</strong> High <strong>${currency}${fmt(sum('high'))}</strong>${coverage}`;
+}
+
+
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function showError(msg){const e=document.getElementById('error-msg');e.textContent=msg;e.style.display='block';}
 function hideError(){document.getElementById('error-msg').style.display='none';}
