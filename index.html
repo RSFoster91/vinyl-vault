@@ -68,6 +68,32 @@
   .alpha-sep{width:1px;height:12px;background:var(--groove);margin:0 .15rem;flex-shrink:0;}
 
   /* Controls */
+  /* DASHBOARD */
+  .dashboard-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.6rem;}
+  .dash-card{background:var(--wax);border:1px solid var(--groove);border-radius:1px;padding:1rem 1.1rem 1.2rem;display:flex;flex-direction:column;min-height:200px;}
+  .dash-title{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--smoke);margin-bottom:.7rem;}
+  .dash-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;}
+  .dash-genre-wrap{display:flex;flex-direction:row;align-items:center;gap:.9rem;width:100%;}
+  .dash-genre-svg{width:82px;height:82px;flex-shrink:0;}
+  .dash-legend{display:flex;flex-direction:column;gap:.3rem;font-size:.62rem;}
+  .dash-legend-row{display:flex;align-items:center;gap:.4rem;color:var(--light-smoke);}
+  .dash-legend-swatch{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .dash-legend-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dash-legend-count{color:var(--smoke);font-family:'DM Mono',monospace;flex-shrink:0;}
+  .dash-bar-row{display:flex;align-items:center;gap:.6rem;width:100%;font-size:.62rem;}
+  .dash-bar-label{flex:0 0 auto;color:var(--light-smoke);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dash-bar-track{flex:1;background:var(--groove);border-radius:1px;height:6px;position:relative;overflow:hidden;}
+  .dash-bar-fill{position:absolute;left:0;top:0;height:100%;background:var(--amber);border-radius:1px;}
+  .dash-bar-count{width:24px;text-align:right;flex-shrink:0;color:var(--smoke);font-family:'DM Mono',monospace;}
+  .dash-rotd-thumb{width:96px;height:96px;object-fit:cover;border:1px solid var(--groove);border-radius:1px;cursor:pointer;}
+  .dash-rotd-placeholder{width:96px;height:96px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;background:var(--groove);border-radius:1px;}
+  .dash-rotd-artist{font-size:.62rem;color:var(--amber);letter-spacing:.04em;text-align:center;margin-top:.6rem;text-transform:uppercase;}
+  .dash-rotd-title{font-family:'Playfair Display',serif;font-size:.9rem;color:var(--cream);text-align:center;line-height:1.25;}
+  .dash-rotd-meta{font-size:.6rem;color:var(--smoke);text-align:center;}
+  .dash-empty{font-size:.65rem;color:var(--smoke);text-align:center;}
+  @media(max-width:900px){ .dashboard-row{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:640px){ .dashboard-row{grid-template-columns:1fr;} }
+
   .controls{display:flex;flex-direction:column;gap:.7rem;margin-bottom:1rem;padding-bottom:1.1rem;border-bottom:1px solid var(--groove);}
   .controls-left{display:flex;flex-wrap:wrap;gap:.6rem;width:100%;}
   select{background:var(--wax);border:1px solid var(--groove);color:var(--cream);font-family:'DM Mono',monospace;font-size:.68rem;padding:.5rem .9rem;border-radius:1px;cursor:pointer;outline:none;min-width:128px;letter-spacing:.04em;transition:border-color .2s;}
@@ -333,12 +359,30 @@
 <!-- APP -->
 <div id="app" style="display: none;">
 <div class="app-inner">
+  <div class="dashboard-row" id="dashboard-row">
+    <div class="dash-card">
+      <div class="dash-title">Genre Breakdown</div>
+      <div class="dash-body" id="dash-genre-pie"></div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-title">Top 10 Artists</div>
+      <div class="dash-body" id="dash-top-artists"></div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-title">Records by Decade</div>
+      <div class="dash-body" id="dash-by-decade"></div>
+    </div>
+    <div class="dash-card" id="dash-rotd-card">
+      <div class="dash-title">Record of the Day</div>
+      <div class="dash-body" id="dash-rotd"></div>
+    </div>
+  </div>
   <div class="controls">
     <div class="controls-left">
       <select id="filter-genre" onchange="applyFilters()"><option value="">All Genres</option><option value="Blues">Blues</option><option value="Children's">Children's</option><option value="Classical">Classical</option><option value="Electronic">Electronic</option><option value="Folk, World, &amp; Country">Folk, World, &amp; Country</option><option value="Funk / Soul">Funk / Soul</option><option value="Hip Hop">Hip Hop</option><option value="Jazz">Jazz</option><option value="Latin">Latin</option><option value="Non-Music">Non-Music</option><option value="Pop">Pop</option><option value="Rock">Rock</option><option value="Stage &amp; Screen">Stage &amp; Screen</option></select>
       <select id="filter-style" onchange="applyFilters()"><option value="">All Styles</option><option value="AOR">AOR</option><option value="Acoustic">Acoustic</option><option value="African">African</option><option value="Afrobeat">Afrobeat</option><option value="Alternative Metal">Alternative Metal</option><option value="Alternative Rock">Alternative Rock</option><option value="Ambient">Ambient</option><option value="Arena Rock">Arena Rock</option><option value="Art Rock">Art Rock</option><option value="Avantgarde">Avantgarde</option><option value="Bakersfield Sound">Bakersfield Sound</option><option value="Ballad">Ballad</option><option value="Beat">Beat</option><option value="Big Band">Big Band</option><option value="Bluegrass">Bluegrass</option><option value="Blues Rock">Blues Rock</option><option value="Bolero">Bolero</option><option value="Bubblegum">Bubblegum</option><option value="Cha-Cha">Cha-Cha</option><option value="Chanson">Chanson</option><option value="Chicago Blues">Chicago Blues</option><option value="Classic Rock">Classic Rock</option><option value="Classical">Classical</option><option value="Comedy">Comedy</option><option value="Contemporary">Contemporary</option><option value="Contemporary Jazz">Contemporary Jazz</option><option value="Contemporary R&amp;B">Contemporary R&amp;B</option><option value="Country">Country</option><option value="Country Blues">Country Blues</option><option value="Country Rock">Country Rock</option><option value="Dance-pop">Dance-pop</option><option value="Delta Blues">Delta Blues</option><option value="Descarga">Descarga</option><option value="Dialogue">Dialogue</option><option value="Disco">Disco</option><option value="Downtempo">Downtempo</option><option value="Easy Listening">Easy Listening</option><option value="Education">Education</option><option value="Electric Blues">Electric Blues</option><option value="Electro">Electro</option><option value="Experimental">Experimental</option><option value="Flamenco">Flamenco</option><option value="Folk">Folk</option><option value="Folk Rock">Folk Rock</option><option value="Funk">Funk</option><option value="Fusion">Fusion</option><option value="Garage Rock">Garage Rock</option><option value="Glam">Glam</option><option value="Gospel">Gospel</option><option value="Guaguancó">Guaguancó</option><option value="Hard Rock">Hard Rock</option><option value="Heavy Metal">Heavy Metal</option><option value="Hi NRG">Hi NRG</option><option value="Hillbilly">Hillbilly</option><option value="Hip Hop">Hip Hop</option><option value="Holiday">Holiday</option><option value="Horror Rock">Horror Rock</option><option value="House">House</option><option value="Indie Rock">Indie Rock</option><option value="Instrumental">Instrumental</option><option value="Interview">Interview</option><option value="Jazz-Funk">Jazz-Funk</option><option value="Jazz-Rock">Jazz-Rock</option><option value="Latin Jazz">Latin Jazz</option><option value="Lounge">Lounge</option><option value="Minneapolis Sound">Minneapolis Sound</option><option value="Mod">Mod</option><option value="Modal">Modal</option><option value="Modern">Modern</option><option value="Modern Classical">Modern Classical</option><option value="Monolog">Monolog</option><option value="Musical">Musical</option><option value="New Jack Swing">New Jack Swing</option><option value="New Wave">New Wave</option><option value="Novelty">Novelty</option><option value="Opera">Opera</option><option value="Orchestra">Orchestra</option><option value="Parody">Parody</option><option value="Piano Blues">Piano Blues</option><option value="Political">Political</option><option value="Pop Rock">Pop Rock</option><option value="Power Pop">Power Pop</option><option value="Prog Rock">Prog Rock</option><option value="Program Music">Program Music</option><option value="Psychedelic">Psychedelic</option><option value="Psychedelic Rock">Psychedelic Rock</option><option value="Public Broadcast">Public Broadcast</option><option value="Punk">Punk</option><option value="Radioplay">Radioplay</option><option value="Ragtime">Ragtime</option><option value="Religious">Religious</option><option value="Rhythm &amp; Blues">Rhythm &amp; Blues</option><option value="Rock &amp; Roll">Rock &amp; Roll</option><option value="Rock Opera">Rock Opera</option><option value="Rockabilly">Rockabilly</option><option value="Romantic">Romantic</option><option value="Salsa">Salsa</option><option value="Schlager">Schlager</option><option value="Score">Score</option><option value="Ska">Ska</option><option value="Smooth Jazz">Smooth Jazz</option><option value="Soft Rock">Soft Rock</option><option value="Soul">Soul</option><option value="Soul-Jazz">Soul-Jazz</option><option value="Soundtrack">Soundtrack</option><option value="Southern Rock">Southern Rock</option><option value="Space-Age">Space-Age</option><option value="Special Effects">Special Effects</option><option value="Speech">Speech</option><option value="Spoken Word">Spoken Word</option><option value="Sport">Sport</option><option value="Story">Story</option><option value="Sunshine Pop">Sunshine Pop</option><option value="Surf">Surf</option><option value="Swing">Swing</option><option value="Symphonic Rock">Symphonic Rock</option><option value="Symphony">Symphony</option><option value="Synth-pop">Synth-pop</option><option value="Texas Blues">Texas Blues</option><option value="Theme">Theme</option><option value="Thrash">Thrash</option><option value="Twist">Twist</option><option value="Vocal">Vocal</option><option value="Zydeco">Zydeco</option></select>
       <select id="filter-format" onchange="applyFilters()"><option value="">All Formats</option><option value="All Media">All Media</option><option value="Box Set">Box Set</option><option value="CD">CD</option><option value="Cassette">Cassette</option><option value="Vinyl">Vinyl</option></select>
-      <select id="filter-year" onchange="applyFilters()"><option value="">All Years</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2010">2010</option><option value="2006">2006</option><option value="2003">2003</option><option value="1994">1994</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option><option value="1969">1969</option><option value="1968">1968</option><option value="1967">1967</option><option value="1966">1966</option><option value="1965">1965</option><option value="1964">1964</option><option value="1963">1963</option><option value="1962">1962</option><option value="1961">1961</option><option value="1960">1960</option><option value="1959">1959</option><option value="1958">1958</option><option value="1957">1957</option><option value="1956">1956</option><option value="1955">1955</option></select>
+      <select id="filter-decade" onchange="applyFilters()"><option value="">All Decades</option></select>
       <div class="search-wrap">
         <input type="text" id="search-input" placeholder="Search artist, title…" oninput="applyFilters()">
       </div>
@@ -9561,7 +9605,7 @@
       <div class="wheel-filters">
         <div><label>Genre</label><select id="wheel-genre" onchange="rebuildWheel()"><option value="">All Genres</option><option value="Blues">Blues</option><option value="Children's">Children's</option><option value="Classical">Classical</option><option value="Electronic">Electronic</option><option value="Folk, World, &amp; Country">Folk, World, &amp; Country</option><option value="Funk / Soul">Funk / Soul</option><option value="Hip Hop">Hip Hop</option><option value="Jazz">Jazz</option><option value="Latin">Latin</option><option value="Non-Music">Non-Music</option><option value="Pop">Pop</option><option value="Rock">Rock</option><option value="Stage &amp; Screen">Stage &amp; Screen</option></select></div>
         <div><label>Artist</label><select id="wheel-artist" onchange="rebuildWheel()"><option value="">All Artists</option><option value="101 Strings">101 Strings</option><option value="38 Special">38 Special</option><option value="ABBA">ABBA</option><option value="AC/DC">AC/DC</option><option value="Abbott &amp; Costello">Abbott &amp; Costello</option><option value="Accept">Accept</option><option value="Aerosmith">Aerosmith</option><option value="Air Supply">Air Supply</option><option value="Al Martino">Al Martino</option><option value="Alabama">Alabama</option><option value="Alice Cooper">Alice Cooper</option><option value="Allman And Woman">Allman And Woman</option><option value="Alvin Lee, Ten Years Later">Alvin Lee, Ten Years Later</option><option value="Amy Grant">Amy Grant</option><option value="Anita Baker">Anita Baker</option><option value="Aretha Franklin">Aretha Franklin</option><option value="B.B. King">B.B. King</option><option value="Bachman-Turner Overdrive">Bachman-Turner Overdrive</option><option value="Bad Company">Bad Company</option><option value="Barbie, Ken">Barbie, Ken</option><option value="Barbra Streisand">Barbra Streisand</option><option value="Barry Manilow">Barry Manilow</option><option value="Bay City Rollers">Bay City Rollers</option><option value="Bee Gees">Bee Gees</option><option value="Ben Folds Five">Ben Folds Five</option><option value="Bill Doggett">Bill Doggett</option><option value="Bill Haley And His Comets">Bill Haley And His Comets</option><option value="Billy 'Crash' Craddock">Billy 'Crash' Craddock</option><option value="Billy Idol">Billy Idol</option><option value="Billy Joel">Billy Joel</option><option value="Billy Ocean">Billy Ocean</option><option value="Billy Squier">Billy Squier</option><option value="Bing Crosby, Frank Sinatra, Fred Waring &amp; The Pennsylvanians">Bing Crosby, Frank Sinatra, Fred Waring &amp; The Pennsylvanians</option><option value="Blondie">Blondie</option><option value="Blue Öyster Cult">Blue Öyster Cult</option><option value="Bob Dylan">Bob Dylan</option><option value="Bob James">Bob James</option><option value="Bob Seger And The Silver Bullet Band">Bob Seger And The Silver Bullet Band</option><option value="Bobby Brown">Bobby Brown</option><option value="Bon Jovi">Bon Jovi</option><option value="Boston">Boston</option><option value="Brownsville Station">Brownsville Station</option><option value="Bruce Springsteen">Bruce Springsteen</option><option value="Bryan Adams">Bryan Adams</option><option value="Buck Owens And His Buckaroos">Buck Owens And His Buckaroos</option><option value="Buddy Holly, The Crickets">Buddy Holly, The Crickets</option><option value="Canned Heat">Canned Heat</option><option value="Captain And Tennille">Captain And Tennille</option><option value="Carlos Montoya">Carlos Montoya</option><option value="Carly Simon">Carly Simon</option><option value="Carpenters">Carpenters</option><option value="Cat Stevens">Cat Stevens</option><option value="Charley Pride">Charley Pride</option><option value="Charlie Daniels">Charlie Daniels</option><option value="Cheap Trick">Cheap Trick</option><option value="Cheap Trick, Cheap Trick">Cheap Trick, Cheap Trick</option><option value="Cheech &amp; Chong">Cheech &amp; Chong</option><option value="Chicago">Chicago</option><option value="Christopher Cross">Christopher Cross</option><option value="Chubby Checker">Chubby Checker</option><option value="Commodores">Commodores</option><option value="Creedence Clearwater Revival">Creedence Clearwater Revival</option><option value="Crosby, Stills, Nash &amp; Young">Crosby, Stills, Nash &amp; Young</option><option value="Crystal Gayle">Crystal Gayle</option><option value="Dan Fogelberg">Dan Fogelberg</option><option value="Daryl Hall &amp; John Oates">Daryl Hall &amp; John Oates</option><option value="David Bowie">David Bowie</option><option value="David Lee Roth">David Lee Roth</option><option value="David McCallum">David McCallum</option><option value="Dean Martin">Dean Martin</option><option value="Debbie Gibson">Debbie Gibson</option><option value="Debbie Reynolds">Debbie Reynolds</option><option value="Deep Purple">Deep Purple</option><option value="Def Leppard">Def Leppard</option><option value="Diana Ross">Diana Ross</option><option value="Dire Straits">Dire Straits</option><option value="Donny Osmond">Donny Osmond</option><option value="Dr. Hook">Dr. Hook</option><option value="Dr. Hook &amp; The Medicine Show">Dr. Hook &amp; The Medicine Show</option><option value="Eagles">Eagles</option><option value="Earth, Wind &amp; Fire">Earth, Wind &amp; Fire</option><option value="Eddie Money">Eddie Money</option><option value="Electric Light Orchestra">Electric Light Orchestra</option><option value="Elton John">Elton John</option><option value="Elvis Presley">Elvis Presley</option><option value="Emerson, Lake &amp; Palmer">Emerson, Lake &amp; Palmer</option><option value="Enoch Light, His Orchestra And Chorus">Enoch Light, His Orchestra And Chorus</option><option value="Ernie Harwell, Ray Lane">Ernie Harwell, Ray Lane</option><option value="Etta James">Etta James</option><option value="Eugene Istomin, Eugene Ormandy, The Philadelphia Orchestra, Pyotr Ilyich Tchaikovsky">Eugene Istomin, Eugene Ormandy, The Philadelphia Orchestra, Pyotr Ilyich Tchaikovsky</option><option value="Everly Brothers">Everly Brothers</option><option value="Ferrante &amp; Teicher">Ferrante &amp; Teicher</option><option value="Fleetwood Mac">Fleetwood Mac</option><option value="Foghat">Foghat</option><option value="Foreigner">Foreigner</option><option value="Francis Lai">Francis Lai</option><option value="Frank Sinatra">Frank Sinatra</option><option value="Frédéric Chopin">Frédéric Chopin</option><option value="Gary Puckett &amp; The Union Gap">Gary Puckett &amp; The Union Gap</option><option value="Genesis">Genesis</option><option value="George Carlin">George Carlin</option><option value="George Harrison">George Harrison</option><option value="George Thorogood &amp; The Destroyers">George Thorogood &amp; The Destroyers</option><option value="Ginny Tyler">Ginny Tyler</option><option value="Glen Campbell">Glen Campbell</option><option value="Glenn Frey">Glenn Frey</option><option value="Golden Earring">Golden Earring</option><option value="Grand Funk Railroad">Grand Funk Railroad</option><option value="Grover Washington, Jr.">Grover Washington, Jr.</option><option value="Guns N' Roses">Guns N' Roses</option><option value="Guy Lombardo And His Royal Canadians">Guy Lombardo And His Royal Canadians</option><option value="Hank Williams">Hank Williams</option><option value="Hank Williams With His Drifting Cowboys">Hank Williams With His Drifting Cowboys</option><option value="Heart">Heart</option><option value="Henhouse Prowlers">Henhouse Prowlers</option><option value="Herb Alpert">Herb Alpert</option><option value="Herb Alpert &amp; The Tijuana Brass">Herb Alpert &amp; The Tijuana Brass</option><option value="Herbie Mann">Herbie Mann</option><option value="Herman's Hermits">Herman's Hermits</option><option value="Homer And Jethro">Homer And Jethro</option><option value="Huey Lewis &amp; The News">Huey Lewis &amp; The News</option><option value="Hugh Downs">Hugh Downs</option><option value="Iron Maiden">Iron Maiden</option><option value="J. D. Sumner, The Stamps Quartet">J. D. Sumner, The Stamps Quartet</option><option value="Jackson Browne">Jackson Browne</option><option value="James Taylor">James Taylor</option><option value="Jan &amp; Dean">Jan &amp; Dean</option><option value="Janis Joplin">Janis Joplin</option><option value="Jeff Beck">Jeff Beck</option><option value="Jerry Clower">Jerry Clower</option><option value="Jerry Lee Lewis">Jerry Lee Lewis</option><option value="Jerry Reed">Jerry Reed</option><option value="Jethro Tull">Jethro Tull</option><option value="Jim Croce">Jim Croce</option><option value="Jim Nabors">Jim Nabors</option><option value="Jim Stafford">Jim Stafford</option><option value="Jimi Hendrix">Jimi Hendrix</option><option value="Jiminy Cricket">Jiminy Cricket</option><option value="Jimmy Buffett">Jimmy Buffett</option><option value="Jimmy Dean">Jimmy Dean</option><option value="Joan Jett &amp; The Blackhearts">Joan Jett &amp; The Blackhearts</option><option value="Joe Walsh">Joe Walsh</option><option value="John Cougar Mellencamp">John Cougar Mellencamp</option><option value="John Denver">John Denver</option><option value="John F. Kennedy">John F. Kennedy</option><option value="John Lennon">John Lennon</option><option value="John Lennon &amp; Yoko Ono">John Lennon &amp; Yoko Ono</option><option value="John Lennon, The Plastic Ono Band">John Lennon, The Plastic Ono Band</option><option value="John Mayer">John Mayer</option><option value="John Williams, London Symphony Orchestra">John Williams, London Symphony Orchestra</option><option value="Johnny Cash">Johnny Cash</option><option value="Johnny Cash &amp; The Tennessee Two">Johnny Cash &amp; The Tennessee Two</option><option value="Johnny Cash, June Carter">Johnny Cash, June Carter</option><option value="Johnny Mathis">Johnny Mathis</option><option value="Journey">Journey</option><option value="Judas Priest">Judas Priest</option><option value="KC &amp; The Sunshine Band">KC &amp; The Sunshine Band</option><option value="Kansas">Kansas</option><option value="Kenny G">Kenny G</option><option value="Kenny Loggins">Kenny Loggins</option><option value="Kenny Rogers">Kenny Rogers</option><option value="Kiss">Kiss</option><option value="Kiss, Gene Simmons">Kiss, Gene Simmons</option><option value="Lauren Daigle">Lauren Daigle</option><option value="Lawrence Welk">Lawrence Welk</option><option value="Lawrence Welk, Dick Kesner">Lawrence Welk, Dick Kesner</option><option value="Led Zeppelin">Led Zeppelin</option><option value="Less Than Jake">Less Than Jake</option><option value="Liberace">Liberace</option><option value="Linda Ronstadt">Linda Ronstadt</option><option value="Lionel Richie">Lionel Richie</option><option value="Little River Band">Little River Band</option><option value="Loggins And Messina">Loggins And Messina</option><option value="Loretta Lynn">Loretta Lynn</option><option value="Loverboy">Loverboy</option><option value="Ludwig van Beethoven">Ludwig van Beethoven</option><option value="Luther Vandross">Luther Vandross</option><option value="Lynyrd Skynyrd">Lynyrd Skynyrd</option><option value="Manhattans">Manhattans</option><option value="Mario Lanza">Mario Lanza</option><option value="Marvin Gaye">Marvin Gaye</option><option value="Marvin Hamlisch">Marvin Hamlisch</option><option value="Maurice Jarre">Maurice Jarre</option><option value="Maynard Ferguson, Teddy Wilson, Clark Terry, Rufus Jones">Maynard Ferguson, Teddy Wilson, Clark Terry, Rufus Jones</option><option value="Meat Loaf">Meat Loaf</option><option value="Merle Haggard, The Strangers">Merle Haggard, The Strangers</option><option value="Metallica">Metallica</option><option value="Michael Jackson">Michael Jackson</option><option value="Mike Oldfield">Mike Oldfield</option><option value="Miles Davis">Miles Davis</option><option value="Mirror Image">Mirror Image</option><option value="Molly Hatchet">Molly Hatchet</option><option value="Mott">Mott</option><option value="Mumford &amp; Sons">Mumford &amp; Sons</option><option value="Mutemath">Mutemath</option><option value="Nat King Cole">Nat King Cole</option><option value="Natalie Cole">Natalie Cole</option><option value="National Lampoon">National Lampoon</option><option value="Neil Diamond">Neil Diamond</option><option value="Neil Young">Neil Young</option><option value="Night Ranger">Night Ranger</option><option value="No Artist">No Artist</option><option value="Norah Jones">Norah Jones</option><option value="Ohio Players">Ohio Players</option><option value="Olivia Newton-John">Olivia Newton-John</option><option value="Ozzie Nelson, Harriet Nelson">Ozzie Nelson, Harriet Nelson</option><option value="Ozzy Osbourne">Ozzy Osbourne</option><option value="Pat Benatar">Pat Benatar</option><option value="Paul McCartney">Paul McCartney</option><option value="Paul Simon">Paul Simon</option><option value="Paul Simon, Simon &amp; Garfunkel, Dave Grusin">Paul Simon, Simon &amp; Garfunkel, Dave Grusin</option><option value="Paul Young">Paul Young</option><option value="Perry Como">Perry Como</option><option value="Peter Frampton">Peter Frampton</option><option value="Peter, Paul &amp; Mary">Peter, Paul &amp; Mary</option><option value="Phil &amp; John">Phil &amp; John</option><option value="Pink Floyd">Pink Floyd</option><option value="Pointer Sisters">Pointer Sisters</option><option value="Prince">Prince</option><option value="Prince And The Revolution">Prince And The Revolution</option><option value="Queen">Queen</option><option value="Quincy Jones">Quincy Jones</option><option value="REO Speedwagon">REO Speedwagon</option><option value="Ratt">Ratt</option><option value="Ray Charles">Ray Charles</option><option value="Red">Red</option><option value="Richard M. Sherman, Robert B. Sherman">Richard M. Sherman, Robert B. Sherman</option><option value="Richard Pryor">Richard Pryor</option><option value="Rick Springfield">Rick Springfield</option><option value="Rihanna">Rihanna</option><option value="Robert Hunter">Robert Hunter</option><option value="Robert Plant">Robert Plant</option><option value="Robert Schumann, The Cleveland Orchestra, George Szell">Robert Schumann, The Cleveland Orchestra, George Szell</option><option value="Robin Trower">Robin Trower</option><option value="Rod Stewart">Rod Stewart</option><option value="Rodgers &amp; Hammerstein, Julie Andrews, Christopher Plummer, Irwin Kostal">Rodgers &amp; Hammerstein, Julie Andrews, Christopher Plummer, Irwin Kostal</option><option value="Roger Daltrey">Roger Daltrey</option><option value="Rossington Collins Band">Rossington Collins Band</option><option value="Roy Orbison, Guests">Roy Orbison, Guests</option><option value="Roy Rogers">Roy Rogers</option><option value="Rush">Rush</option><option value="Sam The Sham &amp; The Pharaohs">Sam The Sham &amp; The Pharaohs</option><option value="Sammy Hagar">Sammy Hagar</option><option value="Santana">Santana</option><option value="Seals &amp; Crofts">Seals &amp; Crofts</option><option value="Sebastian Cabot, Sterling Holloway, Paul Winchell">Sebastian Cabot, Sterling Holloway, Paul Winchell</option><option value="Shaun Cassidy">Shaun Cassidy</option><option value="Sheena Easton">Sheena Easton</option><option value="Shy">Shy</option><option value="Silk Sonic">Silk Sonic</option><option value="Simon &amp; Garfunkel">Simon &amp; Garfunkel</option><option value="Smothers Brothers">Smothers Brothers</option><option value="Spinners">Spinners</option><option value="Steely Dan">Steely Dan</option><option value="Steppenwolf">Steppenwolf</option><option value="Sterling Holloway">Sterling Holloway</option><option value="Steve Davey">Steve Davey</option><option value="Steve Lawrence, Charlie Francis">Steve Lawrence, Charlie Francis</option><option value="Steve Martin">Steve Martin</option><option value="Steve Miller Band">Steve Miller Band</option><option value="Stevie Nicks">Stevie Nicks</option><option value="Stevie Wonder">Stevie Wonder</option><option value="Stray Cats">Stray Cats</option><option value="Styx">Styx</option><option value="Sutherland Brothers, Quiver">Sutherland Brothers, Quiver</option><option value="Ted Nugent">Ted Nugent</option><option value="Ten Years After">Ten Years After</option><option value="The Allman Brothers Band">The Allman Brothers Band</option><option value="The Animals">The Animals</option><option value="The Beach Boys">The Beach Boys</option><option value="The Beatles">The Beatles</option><option value="The Blues Brothers">The Blues Brothers</option><option value="The Buggs">The Buggs</option><option value="The Byrds">The Byrds</option><option value="The Cars">The Cars</option><option value="The Charlie Daniels Band">The Charlie Daniels Band</option><option value="The Doobie Brothers">The Doobie Brothers</option><option value="The Doors">The Doors</option><option value="The Fifth Dimension">The Fifth Dimension</option><option value="The Guess Who">The Guess Who</option><option value="The Isley Brothers">The Isley Brothers</option><option value="The Jackson 5">The Jackson 5</option><option value="The Jacksons">The Jacksons</option><option value="The Jimi Hendrix Experience">The Jimi Hendrix Experience</option><option value="The Killers">The Killers</option><option value="The Kinks">The Kinks</option><option value="The Liverpools">The Liverpools</option><option value="The Longines Symphonette">The Longines Symphonette</option><option value="The Lovin' Spoonful">The Lovin' Spoonful</option><option value="The Mamas &amp; The Papas">The Mamas &amp; The Papas</option><option value="The Marshall Tucker Band">The Marshall Tucker Band</option><option value="The Monkees">The Monkees</option><option value="The Moody Blues">The Moody Blues</option><option value="The Mothers">The Mothers</option><option value="The Oak Ridge Boys">The Oak Ridge Boys</option><option value="The Osmonds">The Osmonds</option><option value="The Police">The Police</option><option value="The Randy Brothers">The Randy Brothers</option><option value="The Roland Shaw Orchestra">The Roland Shaw Orchestra</option><option value="The Rolling Stones">The Rolling Stones</option><option value="The Scramblers">The Scramblers</option><option value="The Stylistics">The Stylistics</option><option value="The Supremes">The Supremes</option><option value="The Temptations">The Temptations</option><option value="The Turtles">The Turtles</option><option value="The Warning">The Warning</option><option value="The Wetherly Brothers, The Bayou Boys, Sons Of The Soil, Harold Hensley And The Virginia Mountaineers">The Wetherly Brothers, The Bayou Boys, Sons Of The Soil, Harold Hensley And The Virginia Mountaineers</option><option value="The Who">The Who</option><option value="The Wyncote Orchestra">The Wyncote Orchestra</option><option value="Three Dog Night">Three Dog Night</option><option value="Tito Puente">Tito Puente</option><option value="Tom Jones">Tom Jones</option><option value="Tom Petty">Tom Petty</option><option value="Tom Petty And The Heartbreakers">Tom Petty And The Heartbreakers</option><option value="Tommy James &amp; The Shondells">Tommy James &amp; The Shondells</option><option value="Triumph">Triumph</option><option value="USA For Africa">USA For Africa</option><option value="Unknown Artist">Unknown Artist</option><option value="Van Halen">Van Halen</option><option value="Van McCoy &amp; The Soul City Symphony">Van McCoy &amp; The Soul City Symphony</option><option value="Various">Various</option><option value="Village People">Village People</option><option value="Walt Disney Studio Orchestra">Walt Disney Studio Orchestra</option><option value="War">War</option><option value="Wayne Newton">Wayne Newton</option><option value="Wendy Dawn">Wendy Dawn</option><option value="Whitesnake">Whitesnake</option><option value="Whitney Houston">Whitney Houston</option><option value="Willie Nelson">Willie Nelson</option><option value="Wings">Wings</option><option value="Yes">Yes</option><option value="ZZ Top">ZZ Top</option></select></div>
-        <div><label>Format</label><select id="wheel-format" onchange="rebuildWheel()"><option value="">All Formats</option><option value="All Media">All Media</option><option value="Box Set">Box Set</option><option value="CD">CD</option><option value="Cassette">Cassette</option><option value="Vinyl">Vinyl</option></select></div>
+        <div><label>Decade</label><select id="wheel-decade" onchange="rebuildWheel()"><option value="">All Decades</option></select></div>
         <div style="font-size:.6rem;color:var(--smoke);margin-top:.2rem" id="wheel-count"></div>
       </div>
       <div id="winner-display">
@@ -9821,6 +9865,7 @@ function initApp(username, exportedAt){
   renderPriceTable();
   updateValueSummary();
   autoResumePriceSync();
+  renderDashboard();
 }
 
 function logout(){
@@ -9892,35 +9937,44 @@ function setAlpha(letter){
 }
 
 // ── FILTERS ───────────────────────────────────────────────────────────────────
+function decadeLabel(d){ return `${d}'s`; }
+
+function getAllDecades(){
+  const decades=new Set();
+  allRecords.forEach(r=>{ if(r.year) decades.add(Math.floor(r.year/10)*10); });
+  return [...decades].sort((a,b)=>b-a);
+}
+
 function buildFilters(){
   fillSelect('filter-genre',[...new Set(allRecords.flatMap(r=>r.genres))].sort());
   fillSelect('filter-style',[...new Set(allRecords.flatMap(r=>r.styles))].sort());
   fillSelect('filter-format',[...new Set(allRecords.flatMap(r=>r.formats))].sort());
-  fillSelect('filter-year',[...new Set(allRecords.map(r=>r.year).filter(Boolean))].sort((a,b)=>b-a));
+  const decades=getAllDecades();
+  fillSelect('filter-decade',decades,decadeLabel);
   fillSelect('wheel-genre',[...new Set(allRecords.flatMap(r=>r.genres))].sort());
   fillSelect('wheel-artist',[...new Set(allRecords.map(r=>r.artist))].sort());
-  fillSelect('wheel-format',[...new Set(allRecords.flatMap(r=>r.formats))].sort());
+  fillSelect('wheel-decade',decades,decadeLabel);
 }
 
-function fillSelect(id,values){
+function fillSelect(id,values,labelFn){
   const sel=document.getElementById(id);
   const first=sel.options[0];
   sel.innerHTML='';sel.appendChild(first);
-  values.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o);});
+  values.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=labelFn?labelFn(v):v;sel.appendChild(o);});
 }
 
 function applyFilters(){
   const genre=document.getElementById('filter-genre').value;
   const style=document.getElementById('filter-style').value;
   const format=document.getElementById('filter-format').value;
-  const year=document.getElementById('filter-year').value;
+  const decade=document.getElementById('filter-decade').value;
   const q=document.getElementById('search-input').value.toLowerCase();
 
   filteredRecords=allRecords.filter(r=>{
     if(genre&&!r.genres.includes(genre))return false;
     if(style&&!r.styles.includes(style))return false;
     if(format&&!r.formats.includes(format))return false;
-    if(year&&String(r.year)!==year)return false;
+    if(decade&&(!r.year||Math.floor(r.year/10)*10!==Number(decade)))return false;
     if(q&&!r.title.toLowerCase().includes(q)&&!r.artist.toLowerCase().includes(q))return false;
     if(currentAlpha!=='ALL'){
       const ch=getSortKey(r)[0]?.toUpperCase()||'';
@@ -10136,11 +10190,11 @@ function closeWheelModal(){
 function rebuildWheel(){
   const genre=document.getElementById('wheel-genre').value;
   const artist=document.getElementById('wheel-artist').value;
-  const format=document.getElementById('wheel-format').value;
+  const decade=document.getElementById('wheel-decade').value;
   wheelRecords=shuffle(allRecords.filter(r=>{
     if(genre&&!r.genres.includes(genre))return false;
     if(artist&&r.artist!==artist)return false;
-    if(format&&!r.formats.includes(format))return false;
+    if(decade&&(!r.year||Math.floor(r.year/10)*10!==Number(decade)))return false;
     return true;
   }));
   document.getElementById('wheel-count').textContent=wheelRecords.length
@@ -10592,6 +10646,152 @@ function updateValueSummary(){
   const coverage = priced.length < ids.length ? ` (${priced.length}/${ids.length} priced)` : '';
   el.innerHTML = `Estimated Collection Value: Low <strong>${currency}${fmt(sum('low'))}</strong> Med <strong>${currency}${fmt(sum('med'))}</strong> High <strong>${currency}${fmt(sum('high'))}</strong>${coverage}`;
 }
+
+// ── DASHBOARD ────────────────────────────────────────────────────────────────
+const DASH_PALETTE=['#c8722a','#e8a94a','#8b3a1e','#d4915c','#a85d2e','#f0c674','#6b4423','#b8895a'];
+
+function escAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+function renderDashboard(){
+  if(!allRecords.length)return;
+  renderGenrePie();
+  renderTopArtists();
+  renderByDecade();
+  renderRecordOfDay();
+}
+
+function renderGenrePie(){
+  const el=document.getElementById('dash-genre-pie');
+  if(!el)return;
+  const counts={};
+  allRecords.forEach(r=>{
+    (r.genres||[]).forEach(g=>{ counts[g]=(counts[g]||0)+1; });
+  });
+  let entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){ el.innerHTML='<div class="dash-empty">No genre data.</div>'; return; }
+  if(entries.length>7){
+    const top=entries.slice(0,7);
+    const otherCount=entries.slice(7).reduce((t,e)=>t+e[1],0);
+    entries=[...top,['Other',otherCount]];
+  }
+  const total=entries.reduce((t,e)=>t+e[1],0);
+  const cx=50, cy=50, r=48;
+  let angle=-90; // start at top
+  let paths='';
+  entries.forEach((entry,i)=>{
+    const [genre,count]=entry;
+    const slice=(count/total)*360;
+    const startRad=angle*Math.PI/180;
+    const endRad=(angle+slice)*Math.PI/180;
+    const x1=cx+r*Math.cos(startRad), y1=cy+r*Math.sin(startRad);
+    const x2=cx+r*Math.cos(endRad), y2=cy+r*Math.sin(endRad);
+    const largeArc=slice>180?1:0;
+    const color=DASH_PALETTE[i%DASH_PALETTE.length];
+    if(entries.length===1){
+      paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}"></circle>`;
+    } else {
+      paths+=`<path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${largeArc} 1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="${color}"></path>`;
+    }
+    angle+=slice;
+  });
+  const legend=entries.map((e,i)=>`
+    <div class="dash-legend-row">
+      <span class="dash-legend-swatch" style="background:${DASH_PALETTE[i%DASH_PALETTE.length]}"></span>
+      <span class="dash-legend-label">${escHtml(e[0])}</span>
+      <span class="dash-legend-count">${e[1]}</span>
+    </div>`).join('');
+  el.innerHTML=`
+    <div class="dash-genre-wrap">
+      <svg viewBox="0 0 100 100" class="dash-genre-svg">${paths}</svg>
+      <div class="dash-legend">${legend}</div>
+    </div>`;
+}
+
+function measureTextWidth(text, font){
+  measureTextWidth._canvas = measureTextWidth._canvas || document.createElement('canvas');
+  const ctx = measureTextWidth._canvas.getContext('2d');
+  ctx.font = font;
+  return ctx.measureText(text).width;
+}
+
+function renderTopArtists(){
+  const el=document.getElementById('dash-top-artists');
+  if(!el)return;
+  const counts={};
+  allRecords.forEach(r=>{
+    const a=r.artist||'Unknown';
+    if(a.trim().toLowerCase()==='various'||a.trim().toLowerCase()==='various artists')return;
+    counts[a]=(counts[a]||0)+1;
+  });
+  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  if(!top.length){ el.innerHTML='<div class="dash-empty">No artist data.</div>'; return; }
+  const max=top[0][1];
+  // Size the label column to the longest name actually shown, so the bar column
+  // sits in one consistent spot (not a fixed guess, not hugging each row's own length).
+  const font="9.92px 'DM Mono', monospace";
+  const longest=Math.max(...top.map(([artist])=>measureTextWidth(artist,font)));
+  const labelWidth=Math.ceil(longest)+8;
+  el.innerHTML=top.map(([artist,count])=>`
+    <div class="dash-bar-row">
+      <div class="dash-bar-label" style="width:${labelWidth}px" title="${escAttr(artist)}">${escHtml(artist)}</div>
+      <div class="dash-bar-track"><div class="dash-bar-fill" style="width:${Math.max(4,(count/max*100))}%"></div></div>
+      <div class="dash-bar-count">${count}</div>
+    </div>`).join('');
+}
+
+function renderByDecade(){
+  const el=document.getElementById('dash-by-decade');
+  if(!el)return;
+  const counts={};
+  allRecords.forEach(r=>{
+    if(!r.year)return;
+    const decade=Math.floor(r.year/10)*10;
+    counts[decade]=(counts[decade]||0)+1;
+  });
+  const decades=Object.keys(counts).map(Number).sort((a,b)=>a-b);
+  if(!decades.length){ el.innerHTML='<div class="dash-empty">No year data.</div>'; return; }
+  const max=Math.max(...decades.map(d=>counts[d]));
+  const yMax=Math.ceil(max/25)*25 || 25;
+  const chartW=240, chartH=124, padL=26, padB=16, padT=8;
+  const plotW=chartW-padL-6, plotH=chartH-padB-padT;
+  const barGap=4;
+  const barW=Math.max(6,(plotW/decades.length)-barGap);
+  let bars='', ticks='', labels='';
+  // y-axis gridlines/ticks in increments of 25
+  for(let v=0; v<=yMax; v+=25){
+    const y=padT+plotH-(v/yMax)*plotH;
+    ticks+=`<line x1="${padL}" y1="${y.toFixed(1)}" x2="${chartW-4}" y2="${y.toFixed(1)}" stroke="#3d2b18" stroke-width="1"></line>`;
+    ticks+=`<text x="${padL-4}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="7" fill="#7a6e60">${v}</text>`;
+  }
+  // Thin out labels when there are many decades so the full "1950's" text stays horizontal and readable
+  const labelStep = decades.length>6 ? 2 : 1;
+  decades.forEach((d,i)=>{
+    const count=counts[d];
+    const barH=(count/yMax)*plotH;
+    const x=padL+i*(plotW/decades.length)+barGap/2;
+    const y=padT+plotH-barH;
+    bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#c8722a" rx="1"></rect>`;
+    if(i%labelStep===0){
+      const lx=(x+barW/2).toFixed(1), ly=chartH-4;
+      labels+=`<text x="${lx}" y="${ly}" text-anchor="middle" font-size="7" fill="#7a6e60">${d}'s</text>`;
+    }
+  });
+  el.innerHTML=`<svg viewBox="0 0 ${chartW} ${chartH}" style="width:100%;height:auto">${ticks}${bars}${labels}</svg>`;
+}
+
+function renderRecordOfDay(){
+  const el=document.getElementById('dash-rotd');
+  if(!el || !allRecords.length)return;
+  const r=allRecords[Math.floor(Math.random()*allRecords.length)];
+  const thumb=r.thumb||'';
+  el.innerHTML=`
+    ${thumb ? `<img class="dash-rotd-thumb" src="${escAttr(thumb)}" alt="${escAttr(r.title||'')}" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" onclick="openDetailPanel('${r.release_id}','https://www.discogs.com/release/${r.release_id}')">` : ''}
+    <div class="dash-rotd-placeholder" style="display:${thumb?'none':'flex'}" onclick="openDetailPanel('${r.release_id}','https://www.discogs.com/release/${r.release_id}')">🎵</div>
+    <div class="dash-rotd-artist">${escHtml(r.artist||'')}</div>
+    <div class="dash-rotd-title">${escHtml(r.title||'')}</div>
+    <div class="dash-rotd-meta">${r.year||''}</div>`;
+}
+
 
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
