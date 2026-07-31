@@ -9786,6 +9786,10 @@ var __SNAPSHOT_DATA__ = null;
         priceCache = __SNAPSHOT_DATA__.priceCache;
         try{ localStorage.setItem(PRICE_CACHE_KEY, JSON.stringify(priceCache)); }catch(e){}
       }
+      if(__SNAPSHOT_DATA__.favorites){
+        favorites = new Set(__SNAPSHOT_DATA__.favorites);
+        try{ localStorage.setItem('vv_favorites', JSON.stringify([...favorites])); }catch(e){}
+      }
       initApp(__SNAPSHOT_DATA__.username||'Shared Collection', __SNAPSHOT_DATA__.exportedAt||'');
       // In snapshot mode: hide share/logout buttons (they still have the app otherwise fully functional)
       document.getElementById('btn-logout').style.display='none';
@@ -10479,9 +10483,10 @@ async function doShareSnapshot(){
   const payload=JSON.stringify({
     username:user,
     exportedAt:new Date().toISOString(),
-    version:'1.1',
+    version:'1.2',
     records:allRecords,
-    priceCache:priceCache
+    priceCache:priceCache,
+    favorites:[...favorites]
   });
 
   // Replace the null snapshot data block between our markers
