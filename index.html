@@ -92,6 +92,7 @@
   .dash-rotd-title{font-family:'Playfair Display',serif;font-size:.9rem;color:var(--cream);text-align:center;line-height:1.25;}
   .dash-rotd-meta{font-size:.6rem;color:var(--smoke);text-align:center;}
   .dash-empty{font-size:.65rem;color:var(--smoke);text-align:center;}
+  .dash-tooltip{position:fixed;pointer-events:none;background:var(--wax);border:1px solid var(--gold);color:var(--cream);font-size:.65rem;padding:.3rem .6rem;border-radius:2px;z-index:2000;display:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.45);letter-spacing:.02em;}
   @media(max-width:900px){ .dashboard-row{grid-template-columns:repeat(2,1fr);} }
   @media(max-width:640px){ .dashboard-row{grid-template-columns:1fr;} }
 
@@ -10711,6 +10712,25 @@ const DASH_PALETTE=['#c8722a','#e8a94a','#8b3a1e','#d4915c','#a85d2e','#f0c674',
 
 function escAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
 
+function showDashTooltip(evt,text){
+  let tip=document.getElementById('dash-tooltip');
+  if(!tip){
+    tip=document.createElement('div');
+    tip.id='dash-tooltip';
+    tip.className='dash-tooltip';
+    document.body.appendChild(tip);
+  }
+  tip.textContent=text;
+  tip.style.display='block';
+  tip.style.left=(evt.clientX+14)+'px';
+  tip.style.top=(evt.clientY+10)+'px';
+}
+function hideDashTooltip(){
+  const tip=document.getElementById('dash-tooltip');
+  if(tip) tip.style.display='none';
+}
+
+
 function renderDashboard(){
   if(!allRecords.length)return;
   renderGenrePie();
@@ -10734,22 +10754,27 @@ function renderGenrePie(){
     entries=[...top,['Other',otherCount]];
   }
   const total=entries.reduce((t,e)=>t+e[1],0);
-  const cx=50, cy=50, r=48;
+  const cx=50, cy=50, r=44;
+  const explode=4; // small outward offset per slice, creates the separated "exploded" look
   let angle=-90; // start at top
   let paths='';
   entries.forEach((entry,i)=>{
     const [genre,count]=entry;
     const slice=(count/total)*360;
+    const midRad=(angle+slice/2)*Math.PI/180;
+    const dx=explode*Math.cos(midRad), dy=explode*Math.sin(midRad);
     const startRad=angle*Math.PI/180;
     const endRad=(angle+slice)*Math.PI/180;
     const x1=cx+r*Math.cos(startRad), y1=cy+r*Math.sin(startRad);
     const x2=cx+r*Math.cos(endRad), y2=cy+r*Math.sin(endRad);
     const largeArc=slice>180?1:0;
     const color=DASH_PALETTE[i%DASH_PALETTE.length];
+    const tip=escAttr(`${genre}: ${count}`);
+    const hoverAttrs=`onmousemove="showDashTooltip(event,'${tip.replace(/'/g,"\\'")}')" onmouseleave="hideDashTooltip()" style="cursor:pointer"`;
     if(entries.length===1){
-      paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}"></circle>`;
+      paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" ${hoverAttrs}></circle>`;
     } else {
-      paths+=`<path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${largeArc} 1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="${color}"></path>`;
+      paths+=`<g transform="translate(${dx.toFixed(2)},${dy.toFixed(2)})"><path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${largeArc} 1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="${color}" stroke="#1a1008" stroke-width="1" ${hoverAttrs}></path></g>`;
     }
     angle+=slice;
   });
@@ -10829,7 +10854,11 @@ function renderByDecade(){
     const barH=(count/yMax)*plotH;
     const x=padL+i*(plotW/decades.length)+barGap/2;
     const y=padT+plotH-barH;
-    bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#c8722a" rx="1"></rect>`;
+    const tip=`${d}'s: ${count}`;
+    const hoverAttrs=`onmousemove="showDashTooltip(event,'${tip.replace(/'/g,"\\'")}')" onmouseleave="hideDashTooltip()" style="cursor:pointer"`;
+    // Invisible full-height hit area so hovering above a short bar still shows the tooltip
+    bars+=`<rect x="${x.toFixed(1)}" y="${padT}" width="${barW.toFixed(1)}" height="${plotH.toFixed(1)}" fill="transparent" ${hoverAttrs}></rect>`;
+    bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#c8722a" rx="1" style="pointer-events:none"></rect>`;
     if(i%labelStep===0){
       const lx=(x+barW/2).toFixed(1), ly=chartH-4;
       labels+=`<text x="${lx}" y="${ly}" text-anchor="middle" font-size="7" fill="#7a6e60">${d}'s</text>`;
