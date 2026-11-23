@@ -462,7 +462,7 @@
       <select id="filter-format" onchange="applyFilters()"><option value="">All Formats</option><option value="All Media">All Media</option><option value="Box Set">Box Set</option><option value="CD">CD</option><option value="Cassette">Cassette</option><option value="Vinyl">Vinyl</option></select>
       <select id="filter-decade" onchange="applyFilters()"><option value="">All Decades</option></select>
       <div class="search-wrap">
-        <input type="text" id="search-input" placeholder="Search artist, title…" oninput="applyFilters()">
+        <input type="search" id="search-input" name="vv-collection-search" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" placeholder="Search artist, title…" oninput="applyFilters()">
       </div>
     </div>
     <div class="sort-btns">
@@ -9773,7 +9773,7 @@
         Your token is stored only in this browser.
       </p>
       <div class="price-token-row">
-        <input type="password" id="price-token-input" placeholder="Discogs personal access token">
+        <input type="text" id="price-token-input" name="vv-price-token-input" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" style="-webkit-text-security:disc;text-security:disc" placeholder="Discogs personal access token">
         <button class="btn-action amber" id="price-sync-btn" onclick="startPriceSync()">Sync Prices</button>
       </div>
       <div class="price-sync-status" id="price-sync-status"></div>
@@ -9799,7 +9799,7 @@
         Pulled live from your Discogs Wantlist (read-only — nothing here can be added or removed from this app). Uses the same personal access token as Price Guide.
       </p>
       <div class="price-token-row" id="wantlist-token-row">
-        <input type="password" id="wantlist-token-input" placeholder="Discogs personal access token">
+        <input type="text" id="wantlist-token-input" name="vv-wantlist-token-input" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" style="-webkit-text-security:disc;text-security:disc" placeholder="Discogs personal access token">
         <button class="btn-action amber" id="wantlist-load-btn" onclick="loadWantlist()">Load Wantlist</button>
       </div>
       <div class="price-sync-status" id="wantlist-status"></div>
@@ -9960,6 +9960,7 @@ async function loadCollection(){
     document.getElementById('loading').style.display='none';
     document.getElementById('setup-panel').style.display='block';
     document.getElementById('btn-load').disabled=false;
+    setLoginInputsDisabled(false);
     showError(err.message);
   }
 }
@@ -10131,6 +10132,7 @@ function refreshPlayUI(){
 function initApp(username, exportedAt){
   allRecords = dedupeRecords(allRecords);
   updatePlayedSortVisibility();
+  setLoginInputsDisabled(true);
   document.getElementById('loading').style.display='none';
   document.getElementById('setup-panel').style.display='none';
   document.getElementById('app').style.display='block';
@@ -10155,8 +10157,13 @@ function initApp(username, exportedAt){
   renderDashboard();
 }
 
+function setLoginInputsDisabled(d){
+  ['input-username','input-token'].forEach(id=>{const e=document.getElementById(id);if(e)e.disabled=d;});
+}
+
 function logout(){
   playSession=null;
+  setLoginInputsDisabled(false);
   allRecords=[];filteredRecords=[];
   document.getElementById('app').style.display='none';
   document.getElementById('header-actions').style.display='none';
