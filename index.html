@@ -177,6 +177,14 @@
   #winner-display{display:none;background:var(--wax);border:1px solid var(--amber);padding:1.1rem;animation:fadeUp .4s ease;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   .winner-label{font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:.7rem;}
+  .play-row{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-top:.7rem;}
+  .btn-play{padding:.45rem .9rem;background:var(--groove);color:var(--amber);border:1px solid var(--amber);font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:1px;transition:all .2s;}
+  .btn-play:hover:not(:disabled){background:var(--amber);color:var(--ink);}
+  .btn-play:disabled{opacity:.5;cursor:not-allowed;}
+  .play-status{font-size:.62rem;color:var(--smoke);letter-spacing:.04em;}
+  .play-badge{color:var(--gold)!important;}
+  .vv-toast{position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);background:var(--wax);border:1px solid var(--amber);color:var(--cream);font-size:.7rem;padding:.6rem 1rem;z-index:3000;max-width:90vw;box-shadow:0 6px 20px rgba(0,0,0,.5);}
+  .vv-toast.err{border-color:#c0392b;}
   .winner-inner{display:flex;gap:.9rem;align-items:center;}
   #winner-img{width:68px;height:68px;object-fit:cover;border:1px solid var(--groove);flex-shrink:0;}
   #winner-artist{font-size:.6rem;color:var(--amber);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;}
@@ -389,15 +397,17 @@
     <h2>Connect via Discogs</h2>
     <p class="setup-desc">Enter your Discogs username and personal access token to load your collection live.<br>
       Generate a token at <a href="https://www.discogs.com/settings/developers" target="_blank">discogs.com/settings/developers</a> → "Generate new token".</p>
+    <form id="login-form" action="#" method="post" autocomplete="on" onsubmit="event.preventDefault();loadCollection();return false;">
     <div class="field-group">
-      <label>Discogs Username</label>
-      <input type="text" id="input-username" placeholder="your_username">
+      <label for="input-username">Discogs Username</label>
+      <input type="text" id="input-username" name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="your_username">
     </div>
     <div class="field-group">
-      <label>Personal Access Token</label>
-      <input type="password" id="input-token" placeholder="your_token_here">
+      <label for="input-token">Personal Access Token</label>
+      <input type="password" id="input-token" name="password" autocomplete="current-password" placeholder="your_token_here">
     </div>
-    <button class="btn-primary" id="btn-load" onclick="loadCollection()">Load My Collection</button>
+    <button type="submit" class="btn-primary" id="btn-load">Load My Collection</button>
+    </form>
   </div>
   <div id="tab-import" class="tab-pane">
     <h2>Import from File</h2>
@@ -462,6 +472,7 @@
       <button class="btn-sort" data-sort="year" onclick="setSort('year')">Year</button>
       <button class="btn-sort" data-sort="added" onclick="setSort('added')">Added</button>
       <button class="btn-sort" data-sort="value" onclick="setSort('value')">Value</button>
+      <button class="btn-sort" data-sort="played" onclick="setSort('played')" style="display:none">Most Played</button>
       <button class="btn-sort" data-sort="favorites" onclick="setSort('favorites')">Favorites</button>
       <button class="btn-sort-dir" id="btn-sort-dir" onclick="toggleSortDir()" title="Toggle ascending/descending">↓</button>
       <span class="value-summary-sep">|</span>
@@ -9683,6 +9694,7 @@
           <img id="winner-img" src="" alt="">
           <div><div id="winner-artist"></div><div id="winner-title"></div><div id="winner-year"></div></div>
         </div>
+        <div class="play-row" id="winner-play-row"></div>
       </div>
       <div class="history-panel">
         <h3>Recent Picks <button class="btn-clear" onclick="clearHistory()">Clear all</button></h3>
@@ -9804,6 +9816,7 @@
   </div>
   <div class="dp-body" id="dp-body"></div>
   <div class="dp-footer" id="dp-footer" style="display:none">
+    <div class="play-row" id="dp-play-row" style="margin:0 0 .6rem"></div>
     <a class="dp-discogs-link" id="dp-discogs-link" href="#" target="_blank" rel="noopener">View full listing on Discogs ↗</a>
   </div>
 </div>
@@ -9940,6 +9953,7 @@ async function loadCollection(){
   document.getElementById('loading').style.display='block';
   try{
     allRecords=await fetchAll(username,token);
+    await setupPlayTracking(username,token);
     try{ localStorage.setItem(PRICE_TOKEN_KEY, token); }catch(e){}
     initApp(username,'');
   }catch(err){
@@ -9998,12 +10012,125 @@ function parseReleases(releases){
       year:bi.year||null, genres:bi.genres||[], styles:bi.styles||[],
       formats:bi.formats?.map(f=>f.name)||[], thumb:bi.cover_image||bi.thumb||'',
       date_added:item.date_added,
+      instance_id:item.instance_id, folder_id:item.folder_id, notes:item.notes||[],
     };
   });
 }
 
+// ── PLAY TRACKING (stored in Discogs custom fields) ──────────────────────────
+// Needs two custom fields in Discogs: "Play Count" and "Last Played".
+let playSession=null;            // {username, token, countFieldId, lastFieldId, status}
+let currentWinnerId=null, dpReleaseId=null;
+const playBusy=new Set();
+
+function showToast(msg,isErr){
+  const t=document.createElement('div');
+  t.className='vv-toast'+(isErr?' err':'');
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),isErr?6000:2800);
+}
+
+async function setupPlayTracking(username,token){
+  playSession={username,token,countFieldId:null,lastFieldId:null,status:'checking'};
+  try{
+    const h={'Authorization':`Discogs token=${token}`,'User-Agent':'VinylVault/1.0'};
+    const data=await apiFetch(`https://api.discogs.com/users/${encodeURIComponent(username)}/collection/fields`,h);
+    const find=n=>(data.fields||[]).find(f=>String(f.name).trim().toLowerCase()===n);
+    const c=find('play count'), l=find('last played');
+    playSession.countFieldId=c?Number(c.id):null;
+    playSession.lastFieldId=l?Number(l.id):null;
+    playSession.status=(c&&l)?'ready':'missing';
+  }catch(e){ playSession.status='error'; playSession.error=e.message; }
+  allRecords.forEach(r=>{
+    r.plays=0; r.lastPlayed='';
+    if(playSession.status==='ready'){
+      const n=r.notes||[];
+      const cv=n.find(x=>Number(x.field_id)===playSession.countFieldId);
+      const lv=n.find(x=>Number(x.field_id)===playSession.lastFieldId);
+      r.plays=cv?(parseInt(cv.value,10)||0):0;
+      r.lastPlayed=lv?String(lv.value||''):'';
+    }
+    delete r.notes;
+  });
+}
+
+function updatePlayedSortVisibility(){
+  const btn=document.querySelector('.btn-sort[data-sort="played"]');
+  if(!btn)return;
+  const show=(playSession&&playSession.status==='ready')||allRecords.some(r=>r.plays>0);
+  btn.style.display=show?'':'none';
+}
+
+async function writePlayField(rec,fieldId,value){
+  const s=playSession;
+  const base=`https://api.discogs.com/users/${encodeURIComponent(s.username)}/collection/folders/${rec.folder_id}/releases/${rec.release_id}/instances/${rec.instance_id}/fields/${fieldId}`;
+  const auth={'Authorization':`Discogs token=${s.token}`};
+  const netErr=new Error('Could not reach Discogs (network or browser CORS block)');
+  let res;
+  try{ res=await fetch(`${base}?value=${encodeURIComponent(value)}`,{method:'POST',headers:auth}); }catch(e){ throw netErr; }
+  if(res.ok)return;
+  if(res.status===401)throw new Error('Token was rejected (401)');
+  if(res.status===429)throw new Error('Discogs rate limit hit — try again in a minute');
+  const first=res.status;
+  try{ res=await fetch(base,{method:'POST',headers:{...auth,'Content-Type':'application/json'},body:JSON.stringify({value})}); }catch(e){ throw netErr; }
+  if(!res.ok)throw new Error(`Discogs refused the write (${first} / ${res.status})`);
+}
+
+async function markPlayed(releaseId){
+  const s=playSession;
+  const rec=allRecords.find(r=>String(r.release_id)===String(releaseId));
+  if(!s||s.status!=='ready'||!rec)return;
+  if(!rec.instance_id||rec.folder_id==null){showToast('This record is missing its Discogs copy ID — reload your collection.',true);return;}
+  const key=String(rec.release_id);
+  if(playBusy.has(key))return;
+  playBusy.add(key);
+  const prevPlays=rec.plays||0, prevLast=rec.lastPlayed||'';
+  const d=new Date();
+  const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  rec.plays=prevPlays+1; rec.lastPlayed=ds;
+  refreshPlayUI();
+  let countSaved=false;
+  try{
+    await writePlayField(rec,s.countFieldId,String(rec.plays));
+    countSaved=true;
+    await writePlayField(rec,s.lastFieldId,ds);
+    showToast(`Logged: ${rec.title} — ${rec.plays} play${rec.plays===1?'':'s'}`);
+  }catch(e){
+    if(!countSaved) rec.plays=prevPlays;
+    rec.lastPlayed=prevLast;
+    showToast('Could not save to Discogs: '+e.message,true);
+  }finally{
+    setTimeout(()=>{playBusy.delete(key);refreshPlayUI();},1200);
+  }
+}
+
+function playRowHTML(rec){
+  const s=playSession;
+  if(!s||!rec)return '';
+  if(s.status==='missing')return `<span class="play-status">Add custom fields “Play Count” and “Last Played” in Discogs to track plays.</span>`;
+  if(s.status==='error')return `<span class="play-status">Play tracking unavailable: ${escHtml(s.error||'error')}</span>`;
+  if(s.status!=='ready')return '';
+  const n=rec.plays||0, busy=playBusy.has(String(rec.release_id));
+  return `<button class="btn-play" ${busy?'disabled':''} onclick="markPlayed('${rec.release_id}')">▶ Mark as played</button><span class="play-status">${n} play${n===1?'':'s'}${rec.lastPlayed?` · last ${escHtml(rec.lastPlayed)}`:''}</span>`;
+}
+
+function renderPlayRows(){
+  const find=id=>id==null?null:allRecords.find(r=>String(r.release_id)===id);
+  const w=document.getElementById('winner-play-row');
+  if(w)w.innerHTML=playRowHTML(find(currentWinnerId));
+  const d=document.getElementById('dp-play-row');
+  if(d)d.innerHTML=playRowHTML(find(dpReleaseId));
+}
+
+function refreshPlayUI(){
+  renderPlayRows();
+  if(document.getElementById('app').style.display!=='none')applyFilters();
+}
+
 function initApp(username, exportedAt){
   allRecords = dedupeRecords(allRecords);
+  updatePlayedSortVisibility();
   document.getElementById('loading').style.display='none';
   document.getElementById('setup-panel').style.display='none';
   document.getElementById('app').style.display='block';
@@ -10029,6 +10156,7 @@ function initApp(username, exportedAt){
 }
 
 function logout(){
+  playSession=null;
   allRecords=[];filteredRecords=[];
   document.getElementById('app').style.display='none';
   document.getElementById('header-actions').style.display='none';
@@ -10155,7 +10283,7 @@ function setSort(key){
   // Alpha nav changes meaning when sort changes (artist vs title key)
   buildAlphaNav();
   // If alphabetical sort, alpha nav makes sense; otherwise reset to ALL
-  if(key==='year'||key==='added'||key==='value') currentAlpha='ALL';
+  if(key==='year'||key==='added'||key==='value'||key==='played') currentAlpha='ALL';
   applyFilters();
 }
 
@@ -10176,6 +10304,10 @@ function sortRecords(){
     }
     if(currentSort==='year') result=(b.year||0)-(a.year||0);
     if(currentSort==='added') result=new Date(b.date_added)-new Date(a.date_added);
+    if(currentSort==='played'){
+      result=(b.plays||0)-(a.plays||0);
+      if(!result) result=getSortKey(a).localeCompare(getSortKey(b));
+    }
     if(currentSort==='value'){
       const va=getRecMedian(a), vb=getRecMedian(b);
       if(va==null&&vb==null) result=0;
@@ -10214,6 +10346,7 @@ function renderGrid(){
           ${r.year?`<span>${r.year}</span>`:''}
           ${r.formats[0]?`<span>${escHtml(r.formats[0])}</span>`:''}
           ${r.genres[0]?`<span>${escHtml(r.genres[0])}</span>`:''}
+          ${r.plays?`<span class="play-badge" title="Last played ${escAttr(r.lastPlayed||'')}">▶ ${r.plays}</span>`:''}
           ${(()=>{ const p=priceCache[String(r.release_id)]; const med=getRecMedian(r); return (p&&med!=null) ? `<span class="record-price">${p.currency==='USD'?'$':p.currency+' '}${med.toFixed(2)}</span>` : ''; })()}
         </div>
       </div>
@@ -10244,6 +10377,8 @@ function openDetailPanel(releaseId, discogsUrl){
   document.getElementById('detail-panel').classList.add('open');
   document.getElementById('dp-discogs-link').href = discogsUrl || `https://www.discogs.com/release/${releaseId}`;
   document.getElementById('dp-footer').style.display = 'block';
+  dpReleaseId = String(releaseId);
+  renderPlayRows();
   renderDetailLoading();
 
   const requestId = ++dpCurrentRequest;
@@ -10507,6 +10642,8 @@ function showWinner(rec){
   document.getElementById('winner-title').textContent=rec.title;
   document.getElementById('winner-year').textContent=[rec.year,rec.genres[0]].filter(Boolean).join(' · ');
   wd.style.display='block';
+  currentWinnerId=String(rec.release_id);
+  renderPlayRows();
   spinHistory.unshift({record:rec,spunAt:new Date().toISOString()});
   if(spinHistory.length>200)spinHistory.length=200;
   try{sessionStorage.setItem('vv_history',JSON.stringify(spinHistory));}catch(e){}
