@@ -348,16 +348,18 @@
     h1{font-size:2.1rem;}
     .tagline{font-size:.55rem;letter-spacing:.14em;margin-top:.2rem;}
     .header-top-row{gap:.6rem;flex-wrap:nowrap;align-items:flex-start;justify-content:space-between;}
-    .header-right-col{margin-left:auto;width:auto;align-items:flex-end;gap:.3rem;min-width:0;}
+    .header-right-col{margin-left:auto;width:auto;flex-direction:row;flex-wrap:wrap;justify-content:flex-end;align-items:center;column-gap:.4rem;row-gap:.35rem;min-width:0;}
+    .theme-switcher{order:1;}
+    .header-actions{order:2;}
+    .header-action-row{order:3;flex-basis:100%;}
     .theme-switcher label{display:none;}
-    .theme-switcher select{max-width:118px;font-size:.58rem;padding:.3rem .45rem;}
-    .header-actions{width:auto;justify-content:flex-end;gap:.5rem;flex-wrap:nowrap;}
+    .theme-switcher select{max-width:108px;font-size:.56rem;padding:.3rem .35rem;}
+    .header-actions{width:auto;justify-content:flex-end;gap:.35rem;flex-wrap:nowrap;border-left:1px solid var(--groove);padding-left:.4rem;}
     .user-pill{font-size:.58rem;padding:.2rem .5rem;}
     .header-actions .btn-text{font-size:.85rem;padding:.1rem .15rem;}
     .header-action-row{flex-direction:row;justify-content:flex-end;gap:.3rem;flex-wrap:nowrap;width:auto;}
     .header-action-row .btn-action{width:auto;padding:.35rem .5rem;font-size:.85rem;text-align:center;}
     .bt-label{display:none;}
-    .bt-short{display:inline;font-size:.58rem;}
     .insights-bar{margin-bottom:.6rem;}
     .value-summary-sep{display:none;}
     .value-summary{white-space:normal;width:100%;order:99;}
@@ -368,6 +370,20 @@
     .dash-legend{font-size:.56rem;}
     .dash-bar-row,.dash-bar-track{font-size:.56rem;}
     .dash-rotd-thumb,.dash-rotd-placeholder{width:64px;height:64px;}
+  }
+  @media(max-width:640px){
+    .theme-switcher select,.header-actions .user-pill{height:26px;box-sizing:border-box;line-height:1;margin:0;}
+    .header-actions .user-pill{display:flex;align-items:center;}
+    .theme-switcher select{padding-top:0;padding-bottom:0;}
+  }
+  @media(min-width:500px) and (max-width:640px){ h1{white-space:nowrap;} }
+  @media(max-width:420px){
+    h1{font-size:1.75rem;}
+    .header-top-row{gap:.4rem;}
+    .theme-switcher select{max-width:92px;font-size:.52rem;padding:.3rem .25rem;}
+    .user-pill{padding:.15rem .35rem;font-size:.54rem;}
+    .header-actions{gap:.2rem;padding-left:.3rem;}
+    .header-actions .btn-text{font-size:.8rem;padding:0 .05rem;}
   }
 </style>
 </head>
@@ -11093,13 +11109,13 @@ function toggleInsights(){
 function updateInsightsSummary(){
   const el=document.getElementById('insights-summary');
   if(!el)return;
-  let txt=`${allRecords.length.toLocaleString()} records`;
+  let txt='';
   try{
     const priced=getUniqueReleaseIds().map(id=>priceCache[id]).filter(p=>p&&typeof p.med==='number');
     if(priced.length){
       const sum=priced.reduce((t,p)=>t+p.med,0);
       const cur=priced[0].currency==='USD'?'$':(priced[0].currency||'')+' ';
-      txt+=` · est. ${cur}${Math.round(sum).toLocaleString('en-US')}`;
+      txt=`est. ${cur}${Math.round(sum).toLocaleString('en-US')}`;
     }
   }catch(e){}
   el.textContent=txt;
