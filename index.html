@@ -104,6 +104,15 @@
   .dash-rotd-meta{font-size:.6rem;color:var(--smoke);text-align:center;}
   .dash-empty{font-size:.65rem;color:var(--smoke);text-align:center;}
   .dash-tooltip{position:fixed;pointer-events:none;background:var(--wax);border:1px solid var(--gold);color:var(--cream);font-size:.65rem;padding:.3rem .6rem;border-radius:2px;z-index:2000;display:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.45);letter-spacing:.02em;}
+  .bt-short{display:none;}
+  .insights-bar{display:flex;align-items:center;gap:.6rem;padding:.45rem .2rem;margin-bottom:.8rem;cursor:pointer;user-select:none;border-bottom:1px solid var(--groove);}
+  .insights-bar:hover .insights-title,.insights-bar:hover .insights-arrow{color:var(--gold);}
+  .insights-arrow{color:var(--amber);font-size:.8rem;transition:transform .2s;display:inline-block;}
+  .insights-bar.collapsed .insights-arrow{transform:rotate(-90deg);}
+  .insights-title{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--light-smoke);}
+  .insights-summary{display:none;font-size:.6rem;color:var(--smoke);letter-spacing:.04em;margin-left:auto;}
+  .insights-bar.collapsed .insights-summary{display:inline;}
+  .dashboard-row.collapsed{display:none;}
   @media(max-width:900px){ .dashboard-row{grid-template-columns:repeat(2,1fr);} }
   @media(max-width:640px){ .dashboard-row{grid-template-columns:repeat(2,1fr);gap:.6rem;} }
 
@@ -329,13 +338,27 @@
     .wantlist-title{font-size:.62rem;}
     .wantlist-year{font-size:.54rem;margin-top:.15rem;}
     .search-wrap input{width:100%;}
+    .controls-left{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.35rem;}
+    .controls-left select{min-width:0;width:100%;font-size:.52rem;padding:.4rem .9rem .4rem .35rem;letter-spacing:0;text-overflow:ellipsis;appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--smoke) 50%),linear-gradient(135deg,var(--smoke) 50%,transparent 50%);background-position:calc(100% - 7px) 55%,calc(100% - 4px) 55%;background-size:3px 3px,3px 3px;background-repeat:no-repeat;}
+    .controls-left .search-wrap{grid-column:1 / -1;}
+    .search-wrap input{font-size:.62rem;padding:.45rem .7rem;}
     .wheel-layout{padding:1.5rem 1rem;}
     .alpha-btn{font-size:.58rem;padding:.25rem .35rem;min-width:20px;}
-    .header-top-row{gap:.9rem;}
-    .header-right-col{margin-left:0;width:100%;align-items:flex-start;}
-    .header-actions{width:100%;justify-content:flex-start;}
-    .header-action-row{flex-direction:column;justify-content:flex-start;}
-    .header-action-row .btn-action{width:100%;text-align:center;}
+    header{padding:.9rem 0 .7rem;}
+    h1{font-size:2.1rem;}
+    .tagline{font-size:.55rem;letter-spacing:.14em;margin-top:.2rem;}
+    .header-top-row{gap:.6rem;flex-wrap:nowrap;align-items:flex-start;justify-content:space-between;}
+    .header-right-col{margin-left:auto;width:auto;align-items:flex-end;gap:.3rem;min-width:0;}
+    .theme-switcher label{display:none;}
+    .theme-switcher select{max-width:118px;font-size:.58rem;padding:.3rem .45rem;}
+    .header-actions{width:auto;justify-content:flex-end;gap:.5rem;flex-wrap:nowrap;}
+    .user-pill{font-size:.58rem;padding:.2rem .5rem;}
+    .header-actions .btn-text{font-size:.85rem;padding:.1rem .15rem;}
+    .header-action-row{flex-direction:row;justify-content:flex-end;gap:.3rem;flex-wrap:nowrap;width:auto;}
+    .header-action-row .btn-action{width:auto;padding:.35rem .5rem;font-size:.85rem;text-align:center;}
+    .bt-label{display:none;}
+    .bt-short{display:inline;font-size:.58rem;}
+    .insights-bar{margin-bottom:.6rem;}
     .value-summary-sep{display:none;}
     .value-summary{white-space:normal;width:100%;order:99;}
     .dash-card{padding:.7rem .7rem .85rem;min-height:0;}
@@ -372,15 +395,15 @@
         </select>
       </div>
       <div class="header-actions" id="header-actions" style="display: none;">
-        <div class="user-pill">Logged in as <strong id="username-display">.VinylSam</strong></div>
-        <button class="btn-text highlight" id="app-share-btn" onclick="openExportModal()">⇱ Share &amp; Export</button>
-        <button class="btn-text" id="btn-logout" onclick="logout()">↩ Logout</button>
+        <div class="user-pill"><span class="bt-label">Logged in as </span><strong id="username-display">.VinylSam</strong></div>
+        <button class="btn-text highlight" id="app-share-btn" onclick="openExportModal()" title="Share &amp; Export">⇱<span class="bt-label"> Share &amp; Export</span></button>
+        <button class="btn-text" id="btn-logout" onclick="logout()" title="Logout">↩<span class="bt-label"> Logout</span></button>
       </div>
       <div class="header-action-row" id="header-action-row" style="display: none;">
-        <button class="btn-action amber" onclick="openWheelModal()">💿 Pick Next Spin</button>
-        <button class="btn-action muted" onclick="openHistoryModal()">📋 History <span id="hist-badge"></span></button>
-        <button class="btn-action muted" onclick="openPriceModal()">💰 Price Guide</button>
-        <button class="btn-action muted" onclick="openWantlistModal()">🛒 Wantlist</button>
+        <button class="btn-action amber" onclick="openWheelModal()" title="Pick Next Spin">💿<span class="bt-label"> Pick Next Spin</span><span class="bt-short"> Spin</span></button>
+        <button class="btn-action muted" onclick="openHistoryModal()" title="History">📋<span class="bt-label"> History</span> <span id="hist-badge"></span></button>
+        <button class="btn-action muted" onclick="openPriceModal()" title="Price Guide">💰<span class="bt-label"> Price Guide</span></button>
+        <button class="btn-action muted" onclick="openWantlistModal()" title="Wantlist">🛒<span class="bt-label"> Wantlist</span></button>
       </div>
     </div>
   </div>
@@ -437,6 +460,9 @@
 <!-- APP -->
 <div id="app" style="display: none;">
 <div class="app-inner">
+  <div class="insights-bar" id="insights-bar" role="button" tabindex="0" aria-expanded="true" aria-controls="dashboard-row" onclick="toggleInsights()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleInsights();}">
+    <span class="insights-arrow" id="insights-arrow">▾</span><span class="insights-title">Insights</span><span class="insights-summary" id="insights-summary"></span>
+  </div>
   <div class="dashboard-row" id="dashboard-row">
     <div class="dash-card">
       <div class="dash-title">Genre Breakdown</div>
@@ -11023,6 +11049,7 @@ function renderPriceTable(){
 
 // Estimated Collection Value: sums each priced record's low/median/high suggestion across the whole collection
 function updateValueSummary(){
+  updateInsightsSummary();
   const el=document.getElementById('value-summary');
   if(!el)return;
   const ids=getUniqueReleaseIds();
@@ -11036,6 +11063,46 @@ function updateValueSummary(){
   const fmt=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
   const coverage = priced.length < ids.length ? ` (${priced.length}/${ids.length} priced)` : '';
   el.innerHTML = `Estimated Collection Value: Low <strong>${currency}${fmt(sum('low'))}</strong> Med <strong>${currency}${fmt(sum('med'))}</strong> High <strong>${currency}${fmt(sum('high'))}</strong>${coverage}`;
+}
+
+
+// ── INSIGHTS (collapsible dashboard) ─────────────────────────────────────────
+const INSIGHTS_KEY='vv_insights';
+function insightsIsCollapsed(){
+  let v=null;
+  try{ v=localStorage.getItem(INSIGHTS_KEY); }catch(e){}
+  if(v==='closed')return true;
+  if(v==='open')return false;
+  return window.matchMedia('(max-width:640px)').matches; // default: collapsed on phones
+}
+function applyInsightsState(){
+  const c=insightsIsCollapsed();
+  const row=document.getElementById('dashboard-row'), bar=document.getElementById('insights-bar');
+  if(!row||!bar)return;
+  row.classList.toggle('collapsed',c);
+  bar.classList.toggle('collapsed',c);
+  bar.setAttribute('aria-expanded',String(!c));
+  updateInsightsSummary();
+}
+function toggleInsights(){
+  const next=insightsIsCollapsed()?'open':'closed';
+  try{ localStorage.setItem(INSIGHTS_KEY,next); }catch(e){}
+  applyInsightsState();
+  if(next==='open' && allRecords.length){ renderGenrePie(); renderTopArtists(); renderByDecade(); }
+}
+function updateInsightsSummary(){
+  const el=document.getElementById('insights-summary');
+  if(!el)return;
+  let txt=`${allRecords.length.toLocaleString()} records`;
+  try{
+    const priced=getUniqueReleaseIds().map(id=>priceCache[id]).filter(p=>p&&typeof p.med==='number');
+    if(priced.length){
+      const sum=priced.reduce((t,p)=>t+p.med,0);
+      const cur=priced[0].currency==='USD'?'$':(priced[0].currency||'')+' ';
+      txt+=` · est. ${cur}${Math.round(sum).toLocaleString('en-US')}`;
+    }
+  }catch(e){}
+  el.textContent=txt;
 }
 
 // ── DASHBOARD ────────────────────────────────────────────────────────────────
@@ -11074,6 +11141,7 @@ function hideDashTooltip(){
 
 function renderDashboard(){
   if(!allRecords.length)return;
+  applyInsightsState();
   renderGenrePie();
   renderTopArtists();
   renderByDecade();
